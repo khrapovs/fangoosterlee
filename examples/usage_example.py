@@ -8,13 +8,14 @@ Created on Sun Oct 21 11:15:02 2012
 
 import numpy as np
 import matplotlib.pyplot as plt
-from COS import COS
+
+from fangoosterlee import COS
 from CFHeston import CFHeston
 from CFVG import CFVG
 from CFGBM import CFGBM
 from CFARG import CFARG
 from CFinverse import CFinverse
-from imp_vol import impvol
+from impvol import impvol
 
 S = 1.
 T = 30./365
@@ -29,7 +30,7 @@ distr = 'Heston'
 #distr = 'ARG'
 
 if distr == 'GBM':
-    
+
     P = {'T': T,
          'r': r,
          'sigma': .25}
