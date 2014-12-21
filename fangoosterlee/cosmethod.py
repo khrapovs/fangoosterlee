@@ -24,10 +24,6 @@ theta = -.14
 from __future__ import division, print_function
 
 import numpy as np
-from .gbm import GBM
-#from CFHeston import CFHeston
-#from CFVG import CFVG
-#from CFARG import CFARG
 
 __all__ = ['cosmethod']
 
@@ -54,27 +50,6 @@ def cosmethod(model, S=100, K=90, T=.1, r=0, call=True):
 
     CF = lambda x: model.charfun(x)
 
-
-    elif distr == 'ARG':
-        #P = {'T': T, 'r': r, 'rho': .9, 'delta': 1.1, 'dailymean': .3**2, \
-        #    'theta1': 0, 'theta2': 0, 'phi': .0}
-
-        # Truncation rate
-        L = 100 # scalar
-        c1 = r * T # scalar
-        c2 = P['dailymean'] * T * 365 # scalar
-
-        a = c1 - L * np.sqrt(c2) # scalar
-        b = c1 + L * np.sqrt(c2) # scalar
-
-        if P['cp_flag'] == 'C':
-            U = 2 / (b - a) * (xi(k,a,b,0,b) - psi(k,a,b,0,b)) # N-vector
-        else:
-            U = - 2 / (b - a) * (xi(k,a,b,a,0) - psi(k,a,b,a,0)) # N-vector
-
-        CF = CFARG
-
-    #phi = CF(k * np.pi / (b-a), P) # N-vector
     phi = CF(k * np.pi / (b-a)) # N-vector
 
     X1 = np.tile(phi[:,np.newaxis], (1, np.size(K))) # N x d matrix
@@ -87,6 +62,7 @@ def cosmethod(model, S=100, K=90, T=.1, r=0, call=True):
 
     return price
 
+
 def xi(k,a,b,c,d):
     # k is N-vector
     # a,b,c,d are scalars
@@ -97,6 +73,7 @@ def xi(k,a,b,c,d):
         + k * np.pi / (b-a) * np.sin(k * np.pi * (d-a)/(b-a)) * np.exp(d) \
         - k * np.pi / (b-a) * np.sin(k * np.pi * (c-a)/(b-a)) * np.exp(c))
     return ret
+
 
 def psi(k,a,b,c,d):
     # k is N-vector
