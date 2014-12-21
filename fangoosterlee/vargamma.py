@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Geometric Brownian Motion
-=========================
+Variance Gamma process
+======================
 
 """
 
