@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
+r"""
 COS method
 ==========
 
 The method comes from Fang & Oosterlee (2009)
+
 The code is found at
 http://www.wilmott.com/messageview.cfm?catid=34&threadid=78554
 
@@ -23,15 +24,19 @@ theta = -.14
 from __future__ import division, print_function
 
 import numpy as np
-from gbm import GBM
-from CFHeston import CFHeston
-from CFVG import CFVG
+from .gbm import GBM
+#from CFHeston import CFHeston
+#from CFVG import CFVG
 #from CFARG import CFARG
 
-__all__ = ['COS']
+__all__ = ['cosmethod']
 
 
-def COS(model, S=100, K=90, T=.1, r=0, call=True):
+def cosmethod(model, S=100, K=90, T=.1, r=0, call=True):
+    """COS method.
+
+
+    """
     N = 2**10
 
     # d-vector

@@ -9,7 +9,7 @@ Created on Sun Oct 21 11:15:02 2012
 import numpy as np
 import matplotlib.pyplot as plt
 
-from fangoosterlee import COS
+from fangoosterlee import cosmethod
 from CFHeston import CFHeston
 from CFVG import CFVG
 from CFGBM import CFGBM
