@@ -45,76 +45,15 @@ def cosmethod(model, S=100, K=90, T=.1, r=0, call=True):
     k = np.arange(N)
     unit = np.append(.5, np.ones(N-1)) # N-vector
 
-    distr = 'GBM'
+    L, c1, c2, a, b = model.cos_restriction()
 
-    if distr == 'GBM':
-        #P = {'T': T, 'r': r, 'sigma': .12}
-        sigma = model.sigma
+    if call:
+        U = 2 / (b - a) * (xi(k,a,b,0,b) - psi(k,a,b,0,b)) # N-vector
+    else:
+        U = - 2 / (b - a) * (xi(k,a,b,a,0) - psi(k,a,b,a,0)) # N-vector
 
-        L, c1, c2, a, b = model.cos_restriction()
+    CF = lambda x: model.charfun(x)
 
-        if call:
-            U = 2 / (b - a) * (xi(k,a,b,0,b) - psi(k,a,b,0,b)) # N-vector
-        else:
-            U = - 2 / (b - a) * (xi(k,a,b,a,0) - psi(k,a,b,a,0)) # N-vector
-
-        CF = lambda x: model.charfun(x)
-
-    elif distr == 'VG':
-        #P = {'T': T, 'r': r, 'nu': .2, 'theta': -.14, 'sigma': .12}
-        nu = P['nu']
-        theta = P['theta']
-        sigma = P['sigma']
-
-        # Truncation rate
-        L = 10 # scalar
-        c1 = (r + theta) * T # scalar
-        c2 = (sigma**2 + nu * theta**2) * T # scalar
-        c4 = 3 * (sigma**4 * nu + 2 * theta**4 * nu**3 \
-            + 4 * sigma**2 * theta**2 * nu**2) * T # scalar
-
-        a = c1 - L * np.sqrt(c2 + np.sqrt(c4)) # scalar
-        b = c1 + L * np.sqrt(c2 + np.sqrt(c4)) # scalar
-
-        if P['cp_flag'] == 'C':
-            U = 2 / (b - a) * (xi(k,a,b,0,b) - psi(k,a,b,0,b)) # N-vector
-        else:
-            U = - 2 / (b - a) * (xi(k,a,b,a,0) - psi(k,a,b,a,0)) # N-vector
-
-        CF = lambda x: model.charfun(x)
-
-    elif distr == 'Heston':
-        #P = {'T': T, 'r': r, 'lm': 1.5768, 'meanV': .0398, 'eta': .5751, \
-        #    'rho': -.5711, 'v0': .0175}
-        lm = P['lm']
-        meanV = P['meanV']
-        eta = P['eta']
-        rho = P['rho']
-        v0 = P['v0']
-
-        # Truncation for Heston:
-        L = 12 # scalar
-        c1 = r * T + (1 - np.exp(-lm * T)) \
-            * (meanV - v0) / 2 / lm - .5 * meanV * T # scalar
-
-        c2 = 1/(8 * lm**3) * (eta * T * lm * np.exp(-lm * T) \
-            * (v0 - meanV) * (8 * lm * rho - 4 * eta) \
-            + lm * rho * eta * (1 - np.exp(-lm * T)) \
-            * (16 * meanV - 8 * v0) + 2 * meanV * lm * T \
-            * (-4 * lm * rho * eta + eta**2 + 4 * lm**2) \
-            + eta**2 * ((meanV - 2 * v0) * np.exp(-2*lm*T) \
-            + meanV * (6 * np.exp(-lm * T) - 7) + 2 * v0) \
-            + 8 * lm**2 * (v0 - meanV) * (1 - np.exp(-lm*T))) # scalar
-
-        a = c1 - L * np.sqrt(np.abs(c2)) # scalar
-        b = c1 + L * np.sqrt(np.abs(c2)) # scalar
-
-        if P['cp_flag'] == 'C':
-            U = 2 / (b - a) * (xi(k,a,b,0,b) - psi(k,a,b,0,b)) # N-vector
-        else:
-            U = - 2 / (b - a) * (xi(k,a,b,a,0) - psi(k,a,b,a,0)) # N-vector
-
-        CF = CFHeston
 
     elif distr == 'ARG':
         #P = {'T': T, 'r': r, 'rho': .9, 'delta': 1.1, 'dailymean': .3**2, \
