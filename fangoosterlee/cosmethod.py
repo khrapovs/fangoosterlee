@@ -171,7 +171,4 @@ def psi(k,a,b,c,d):
 
 if __name__ == '__main__':
 
-    sigma, riskfree, maturity = .15, 0, 30/365
-    model = GBM(sigma, riskfree, maturity)
-    premium = COS(model, S=100, K=90, T=.1, r=riskfree, call=True)
-    print(premium)
+    pass

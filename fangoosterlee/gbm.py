@@ -11,19 +11,6 @@ import numpy as np
 __all__ = ['GBM']
 
 
-def CFGBM(u, P):
-    # Geometric Brownian Motion characteristic function
-    # u is N-vector
-    # T,r,sigma,nu,theta are scalars
-    # returns N-vector
-    T = P['T']
-    r = P['r']
-    sigma = P['sigma']
-
-    # N-vector
-    return np.exp(u * r * T * 1j - u**2 * sigma**2 * T / 2)
-
-
 class GBM(object):
 
     """Geometric Brownian Motion.
@@ -77,11 +64,11 @@ class GBM(object):
     def cos_restriction(self):
 
         # Truncation rate
-        L = 100 # scalar
+        L = 100
         c1 = self.riskfree * self.maturity
         c2 = self.sigma**2 * self.maturity
 
-        a = c1 - L * np.sqrt(c2) # scalar
-        b = c1 + L * np.sqrt(c2) # scalar
+        a = c1 - L * np.sqrt(c2)
+        b = c1 + L * np.sqrt(c2)
 
         return L, c1, c2, a, b
