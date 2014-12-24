@@ -74,7 +74,8 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
         # N-vector
         U = - 2 / (b - a) * (xi(k, a, b, a, 0) - psi(k, a, b, a, 0))
 
-    phi = model.charfun(k * np.pi / (b-a)) # N-vector
+    # N-vector
+    phi = model.charfun(k * np.pi / (b-a))
 
     # N x d arrays
     X1 = np.tile(phi[:, np.newaxis], (1, np.size(strike)))

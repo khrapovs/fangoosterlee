@@ -1,0 +1,215 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman lmodern
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement H
+\paperfontsize 11
+\spacing onehalf
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks true
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plainnat
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+In general, according to Fang and Oosterlee (2009) the price of any payoff
+ is
+\begin_inset Formula 
+\[
+v\left(x,t_{0}\right)=e^{-rT}E^{Q}\left[\left.v\left(y,T\right)\right|x\right]=e^{-r\Delta t}\int_{\mathbb{R}}v\left(y,T\right)f\left(y|x\right)dy.
+\]
+
+\end_inset
+
+The conditional characteristic function is defined as
+\begin_inset Formula 
+\[
+\phi\left(w,x\right)=\int_{\mathbb{R}}e^{iwy}f\left(y|x\right)dy=E^{Q}\left[\left.e^{iwy}\right|x\right].
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The general pricing formula can be approximated by
+\begin_inset Formula 
+\[
+v\left(x,t_{0}\right)\approx e^{-r\Delta t}\sum_{k=0}^{N-1\prime}\text{Re}\left\{ \phi\left(\frac{k\pi}{b-a},x\right)\exp\left(-ik\pi\frac{a}{b-a}\right)\right\} V_{k},
+\]
+
+\end_inset
+
+where
+\begin_inset Formula 
+\[
+V_{k}=\frac{2}{b-a}\int v\left(y,T\right)\cos\left(k\pi\frac{y-a}{b-a}\right)dy.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For plain vanilla options define 
+\begin_inset Formula $x=\log\left(S_{0}/K\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $y=\log\left(S_{T}/K\right)$
+\end_inset
+
+.
+ The call payoff is then 
+\begin_inset Formula $v\left(y,T\right)=K\left(e^{y}-1\right)^{+}$
+\end_inset
+
+.
+ With this in mind,
+\begin_inset Formula 
+\[
+V_{k}^{call}=\frac{2}{b-a}K\left(\chi_{k}\left(0,b\right)-\psi_{k}\left(0,b\right)\right),
+\]
+
+\end_inset
+
+where
+\begin_inset Formula 
+\begin{eqnarray*}
+\chi_{k}\left(c,d\right) & = & \int_{c}^{d}e^{y}\cos\left(k\pi\frac{y-a}{b-a}\right)dy,\\
+\psi_{k}\left(c,d\right) & = & \int_{c}^{d}\cos\left(k\pi\frac{y-a}{b-a}\right)dy,
+\end{eqnarray*}
+
+\end_inset
+
+are known analytically.
+\end_layout
+
+\begin_layout Standard
+If we are able to decompose characteristic function as
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula 
+\[
+\phi\left(w,x\right)=\varphi\left(w\right)e^{iwx},
+\]
+
+\end_inset
+
+then the pricing formula simplifies to
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula 
+\[
+v\left(\mathbf{x},t_{0}\right)\approx\mathbf{K}e^{-r\Delta t}\cdot\text{Re}\left\{ \sum_{k=0}^{N-1\prime}\varphi\left(\frac{k\pi}{b-a}\right)U_{k}\cdot\exp\left(ik\pi\frac{\mathbf{x}-a}{b-a}\right)\right\} ,
+\]
+
+\end_inset
+
+with
+\begin_inset Formula 
+\[
+U_{k}=\frac{2}{b-a}\left(\chi_{k}\left(0,b\right)-\psi_{k}\left(0,b\right)\right).
+\]
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
