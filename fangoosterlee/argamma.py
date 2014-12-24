@@ -8,33 +8,28 @@ Autoregressive Gamma Process
 
 import numpy as np
 
-__all__ = ['ARG']
+__all__ = ['ARG', 'ARGParam']
 
 
-class ARG(object):
+class ARGParam(object):
 
-    """Autoregressive Gamma Process.
-
-    Attributes
-    ----------
-    sigma
-        Annualized volatility
-
-    Methods
-    -------
-    charfun
-        Characteristic function
+    """Parameter storage.
 
     """
 
-    def __init__(self, rho, delta, mu, sigma, phi, theta1, theta2,
-                 riskfree, maturity):
-        """Initialize the class.
+    def __init__(self, rho=.55, delta=.75, mu=.2**2/365,
+                 sigma=.2**2/365, phi=-.1, theta1=-16, theta2=21):
+        """Initialize class.
 
         Parameters
         ----------
-        sigmma
-            Annualized volatility
+        rho : float
+        delta : float
+        mu : float
+        sigma : float
+        phi : float
+        theta1 : float
+        theta2 : float
 
         """
         self.rho = rho
@@ -44,6 +39,34 @@ class ARG(object):
         self.phi = phi
         self.theta1 = theta1
         self.theta2 = theta2
+
+
+class ARG(object):
+
+    """Autoregressive Gamma Process.
+
+    Attributes
+    ----------
+    param
+        Model parameters
+
+    Methods
+    -------
+    charfun
+        Characteristic function
+
+    """
+
+    def __init__(self, param, riskfree, maturity):
+        """Initialize the class.
+
+        Parameters
+        ----------
+        sigmma
+            Annualized volatility
+
+        """
+        self.param = param
         self.riskfree = riskfree
         self.maturity = maturity
 
@@ -65,27 +88,36 @@ class ARG(object):
             Values of characteristic function
 
         """
-        scale = self.mu * (1 - self.rho) / self.delta
-        betap = self.rho / scale
+
+        rho = self.param.rho
+        delta = self.param.delta
+        mu = self.param.mu
+        sigma = self.param.sigma
+        phi = self.param.phi
+        theta1 = self.param.theta1
+        theta2 = self.param.theta2
+
+        scale = mu * (1 - rho) / delta
+        betap = rho / scale
         n = int(self.maturity * 365)
 
         # distribution of one period volatility
-        a = lambda u: self.rho * u / (1 + scale * u)
-        b = lambda u: self.delta * np.log(1 + scale * u)
+        a = lambda u: rho * u / (1 + scale * u)
+        b = lambda u: delta * np.log(1 + scale * u)
 
-        center = self.phi / (scale * (1 + self.rho))**.5
+        center = phi / (scale * (1 + rho))**.5
 
-        alpha = lambda v: (((self.theta2-.5) * (1-self.phi**2) + center) * v \
-            - .5 * v**2 * (1 - self.phi**2) )
+        alpha = lambda v: (((theta2-.5) * (1-phi**2) + center) * v \
+            - .5 * v**2 * (1 - phi**2) )
 
         # Risk-neutral parameters
-        factor = 1 / (1 + scale * (self.theta1 + alpha(self.theta2)))
+        factor = 1 / (1 + scale * (theta1 + alpha(theta2)))
         scale_star = scale * factor
         betap_star = betap * scale_star / scale
         rho_star = scale_star * betap_star
 
         a_star = lambda u: rho_star * u / (1 + scale_star * u)
-        b_star = lambda u: self.delta * np.log(1 + scale_star * u)
+        b_star = lambda u: delta * np.log(1 + scale_star * u)
 
         beta  = lambda v: v * a_star(- center)
         gamma = lambda v: v * b_star(- center)
@@ -95,27 +127,36 @@ class ARG(object):
         gf = lambda u, v: b(u + alpha(v)) + gamma(v)
 
         # risk-neutral 1-period joint distribution
-        lfQ = lambda u, v: lf(self.theta1 + u, self.theta2 + v) \
-            - lf(self.theta1, self.theta2)
-        gfQ = lambda u, v: gf(self.theta1 + u, self.theta2 + v) \
-            - gf(self.theta1, self.theta2)
+        lfQ = lambda u, v: lf(theta1 + u, theta2 + v) \
+            - lf(theta1, theta2)
+        gfQ = lambda u, v: gf(theta1 + u, theta2 + v) \
+            - gf(theta1, theta2)
         # n-period cumulative return distribution
         psin = lambda n, v: lfQ(0, v) if n == 1 else lfQ(psin(n-1, v), v)
         upsn = lambda n, v: gfQ(0, v) if n == 1 else gfQ(psin(n-1, v), v) \
             + upsn(n-1, v)
 
-        psi = np.exp( - psin(n, -1j * arg) * self.sigma - upsn(n, -1j * arg) )
+        psi = np.exp( - psin(n, -1j * arg) * sigma - upsn(n, -1j * arg) )
         psi = psi * np.exp(- 1j * arg * self.riskfree * self.maturity)
         return psi
 
     def cos_restriction(self):
+        """Restrictions used in COS function.
 
-        # Truncation rate
-        L = 100 # scalar
-        c1 = self.riskfree * self.maturity # scalar
-        c2 = self.mu * self.maturity * 365
+        Returns
+        -------
+        L : float
+        c1 : float
+        c2 : float
+        a : float
+        b : float
 
-        a = c1 - L * np.sqrt(c2)
-        b = c1 + L * np.sqrt(c2)
+        """
+        L = 100
+        c1 = self.riskfree * self.maturity
+        c2 = self.param.mu * self.maturity * 365
+
+        a = c1 - L * c2**.5
+        b = c1 + L * c2**.5
 
         return L, c1, c2, a, b
