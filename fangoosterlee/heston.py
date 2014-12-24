@@ -90,12 +90,10 @@ class Heston(object):
         lm, mu, eta = self.param.lm, self.param.mu, self.param.eta
         rho, sigma = self.param.rho, self.param.sigma
 
-        d = np.sqrt((lm - 1j * rho * eta * arg)**2 \
-            + (arg**2 + 1j * arg) * eta**2)
-        g = (lm - 1j * rho * eta * arg - d) \
-            / (lm - 1j * rho * eta * arg + d)
+        d = np.sqrt((lm - 1j * rho*eta*arg)**2 + (arg**2 + 1j*arg) * eta**2)
+        g = (lm - 1j * rho * eta * arg - d) / (lm - 1j * rho * eta * arg + d)
 
-        phi = np.exp(1j * arg * self.riskfree * self.maturity + sigma / eta**2 \
+        phi = np.exp(1j * arg * self.riskfree * self.maturity + sigma/eta**2 \
             * (1 - np.exp(-d * self.maturity)) \
             / (1 - g * np.exp(-d * self.maturity)) \
             * (lm - 1j * rho * eta * arg - d))
@@ -123,19 +121,21 @@ class Heston(object):
         rho, sigma = self.param.rho, self.param.sigma
 
         L = 12
-        c1 = self.riskfree * self.maturity + (1 - np.exp(-lm * self.maturity)) \
-            * (mu - sigma) / 2 / lm - .5 * mu * self.maturity
+        c1 = self.riskfree * self.maturity \
+            + (1 - np.exp(-lm * self.maturity)) \
+            * (mu - sigma)/2/lm - mu * self.maturity / 2
 
-        c2 = 1/(8 * lm**3) * (eta * self.maturity * lm * np.exp(-lm * self.maturity) \
+        c2 = 1/(8 * lm**3) \
+            * (eta * self.maturity * lm * np.exp(-lm * self.maturity) \
             * (sigma - mu) * (8 * lm * rho - 4 * eta) \
             + lm * rho * eta * (1 - np.exp(-lm * self.maturity)) \
             * (16 * mu - 8 * sigma) + 2 * mu * lm * self.maturity \
             * (-4 * lm * rho * eta + eta**2 + 4 * lm**2) \
             + eta**2 * ((mu - 2 * sigma) * np.exp(-2*lm*self.maturity) \
-            + mu * (6 * np.exp(-lm * self.maturity) - 7) + 2 * sigma) \
+            + mu * (6 * np.exp(-lm*self.maturity) - 7) + 2 * sigma) \
             + 8 * lm**2 * (sigma - mu) * (1 - np.exp(-lm*self.maturity)))
 
-        a = c1 - L * np.sqrt(np.abs(c2)) # scalar
-        b = c1 + L * np.sqrt(np.abs(c2)) # scalar
+        a = c1 - L * np.abs(c2)**.5
+        b = c1 + L * np.abs(c2)**.5
 
         return L, c1, c2, a, b

@@ -97,7 +97,7 @@ class GBM(object):
         c1 = self.riskfree * self.maturity
         c2 = self.param.sigma**2 * self.maturity
 
-        a = c1 - L * np.sqrt(c2)
-        b = c1 + L * np.sqrt(c2)
+        a = c1 - L * c2**.5
+        b = c1 + L * c2**.5
 
         return L, c1, c2, a, b

@@ -80,13 +80,10 @@ class VarGamma(object):
 
         """
         theta, nu, sigma = self.param.theta, self.param.nu, self.param.sigma
-        omega = np.log(1 - theta * nu \
-            - sigma**2 * nu / 2) / nu
-        phi = np.exp(arg * (self.riskfree + omega) \
-            * self.maturity * 1j)
+        omega = np.log(1 - theta * nu - sigma**2 * nu/2) / nu
+        phi = np.exp(arg * (self.riskfree + omega) * self.maturity * 1j)
         phi = phi * ((1 - 1j * theta * nu * arg \
-            + sigma**2 * nu * arg**2 / 2) \
-            ** (- self.maturity / nu))
+            + sigma**2 * nu * arg**2 / 2) ** (- self.maturity / nu))
 
         return phi
 
@@ -110,7 +107,7 @@ class VarGamma(object):
         c4 = 3 * (sigma**4 * nu + 2 * theta**4 * nu**3 \
             + 4 * sigma**2 * theta**2 * nu**2) * self.maturity
 
-        a = c1 - L * np.sqrt(c2 + np.sqrt(c4))
-        b = c1 + L * np.sqrt(c2 + np.sqrt(c4))
+        a = c1 - L * (c2 + c4**.5)**.5
+        b = c1 + L * (c2 + c4**.5)**.5
 
         return L, c1, c2, a, b
