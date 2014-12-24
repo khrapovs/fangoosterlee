@@ -8,6 +8,8 @@ Usage examples of Fang-Oosterlee COS method
 from __future__ import division, print_function
 
 import numpy as np
+import matplotlib.pylab as plt
+import seaborn as sns
 
 from fangoosterlee import (GBM, GBMParam, VarGamma, VarGammaParam,
                            Heston, HestonParam, ARG, ARGParam, cosmethod)
@@ -65,7 +67,7 @@ def multiple_premia():
     """Test COS method on the grid.
 
     """
-    price = 100
+    price = 1
     strike = np.exp(np.linspace(-.1, .1, 10))
     riskfree, maturity = 0, 30/365
     sigma = .15
@@ -73,7 +75,8 @@ def multiple_premia():
     model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
     premium = cosmethod(model, price=price, strike=strike, maturity=maturity,
                         riskfree=riskfree, call=True)
-    print(premium)
+    plt.plot(premium)
+    plt.show()
 
 
 if __name__ == '__main__':

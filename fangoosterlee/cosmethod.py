@@ -1,24 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-r"""
+"""
 COS method
 ==========
 
-The method comes from Fang & Oosterlee (2009)
+The method comes from [1]_
 
-The code is found at
+The original code is found at
 http://www.wilmott.com/messageview.cfm?catid=34&threadid=78554
 
-Working example
----------------
-d = 1e1
-S = 100
-K = np.linspace(80, 120, d) # d-vector
-T = .1
-r = .1
-sigma = .12
-nu = .2
-theta = -.14
+References
+----------
+
+.. [1] Fang, F., & Oosterlee, C. W. (2009).
+    A Novel Pricing Method for European Options
+    Based on Fourier-Cosine Series Expansions.
+    *SIAM Journal on Scientific Computing*, 31(2), 826. doi:10.1137/080718061
+    <http://ta.twi.tudelft.nl/mf/users/oosterle/oosterlee/COS.pdf>
+
+Examples
+--------
 
 """
 from __future__ import division, print_function
@@ -61,7 +62,8 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
     moneyness = np.log(price / strike)
     # N-vector
     k = np.arange(N)
-    unit = np.append(.5, np.ones(N-1)) # N-vector
+    # N-vector
+    unit = np.append(.5, np.ones(N-1))
 
     L, c1, c2, a, b = model.cos_restriction()
 

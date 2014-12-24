@@ -78,10 +78,6 @@ class Heston(object):
         ----------
         arg : array_like
             Grid to evaluate the function
-        riskfree : float
-            Risk-free rate, annualized
-        maturity : float
-            Fraction of a year
 
         Returns
         -------
