@@ -17,12 +17,13 @@ def single_premium():
     """Test COS method for floats.
 
     """
-    S, K = 100, 90
+    price, strike = 100, 90
     riskfree, maturity = 0, 30/365
     sigma = .15
 
     model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
-    premium = cosmethod(model, S=S, K=K, T=maturity, r=riskfree, call=True)
+    premium = cosmethod(model, price=price, strike=strike, maturity=maturity,
+                        riskfree=riskfree, call=True)
     print(premium)
 
     nu = .2
@@ -30,7 +31,8 @@ def single_premium():
     sigma = .25
     param = VarGammaParam(theta=theta, nu=nu, sigma=sigma)
     model = VarGamma(param, riskfree, maturity)
-    premium = cosmethod(model, S=S, K=K, T=maturity, r=riskfree, call=True)
+    premium = cosmethod(model, price=price, strike=strike, maturity=maturity,
+                        riskfree=riskfree, call=True)
     print(premium)
 
     lm = 1.5768
@@ -40,7 +42,8 @@ def single_premium():
     sigma = .12**2
     param = HestonParam(lm=lm, mu=mu, eta=eta, rho=rho, sigma=sigma)
     model = Heston(param, riskfree, maturity)
-    premium = cosmethod(model, S=S, K=K, T=maturity, r=riskfree, call=True)
+    premium = cosmethod(model, price=price, strike=strike, maturity=maturity,
+                        riskfree=riskfree, call=True)
     print(premium)
 
     rho = .55
@@ -53,7 +56,8 @@ def single_premium():
     param = ARGParam(rho=rho, delta=delta, mu=mu, sigma=sigma,
                      phi=phi, theta1=theta1, theta2=theta2)
     model = ARG(param, riskfree, maturity)
-    premium = cosmethod(model, S=S, K=K, T=maturity, r=riskfree, call=True)
+    premium = cosmethod(model, price=price, strike=strike, maturity=maturity,
+                        riskfree=riskfree, call=True)
     print(premium)
 
 
@@ -61,17 +65,18 @@ def multiple_premia():
     """Test COS method on the grid.
 
     """
-    S = 100
-    K = np.exp(np.linspace(-.1, .1, 10))
+    price = 100
+    strike = np.exp(np.linspace(-.1, .1, 10))
     riskfree, maturity = 0, 30/365
     sigma = .15
 
     model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
-    premium = cosmethod(model, S=S, K=K, T=maturity, r=riskfree, call=True)
+    premium = cosmethod(model, price=price, strike=strike, maturity=maturity,
+                        riskfree=riskfree, call=True)
     print(premium)
 
 
 if __name__ == '__main__':
 
-    #single_premium()
+    single_premium()
     multiple_premia()

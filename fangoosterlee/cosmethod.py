@@ -28,26 +28,37 @@ import numpy as np
 __all__ = ['cosmethod']
 
 
-def cosmethod(model, S=100, K=90, T=.1, r=0, call=True):
+def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
     """COS method.
 
     Parameters
     ----------
     model : instance of specific model class
-        Grid to evaluate the function
-    riskfree : float
+        The method depends on availability of two methods:
+            - charfun
+            - cos_restriction
+    price : array_like
+        Current asset price
+    riskfree : array_like
         Risk-free rate, annualized
     maturity : float
         Fraction of a year
 
     Returns
     -------
+    premium : array_like
+        Option premium
 
     """
+    if not hasattr(model, 'charfun'):
+        raise Exception('Characteristic function is not available!')
+    if not hasattr(model, 'cos_restriction'):
+        raise Exception('COS restriction is not available!')
+
     N = 2**10
 
     # d-vector
-    x = np.log(S / K)
+    moneyness = np.log(price / strike)
     # N-vector
     k = np.arange(N)
     unit = np.append(.5, np.ones(N-1)) # N-vector
@@ -55,23 +66,26 @@ def cosmethod(model, S=100, K=90, T=.1, r=0, call=True):
     L, c1, c2, a, b = model.cos_restriction()
 
     if call:
-        U = 2 / (b - a) * (xi(k,a,b,0,b) - psi(k,a,b,0,b)) # N-vector
+        # N-vector
+        U = 2 / (b - a) * (xi(k, a, b, 0, b) - psi(k, a, b, 0, b))
     else:
-        U = - 2 / (b - a) * (xi(k,a,b,a,0) - psi(k,a,b,a,0)) # N-vector
+        # N-vector
+        U = - 2 / (b - a) * (xi(k, a, b, a, 0) - psi(k, a, b, a, 0))
 
-    CF = lambda x: model.charfun(x)
+    phi = model.charfun(k * np.pi / (b-a)) # N-vector
 
-    phi = CF(k * np.pi / (b-a)) # N-vector
+    # N x d arrays
+    X1 = np.tile(phi[:, np.newaxis], (1, np.size(strike)))
+    X2 = np.exp(1j * k[:, np.newaxis] * np.pi * (moneyness-a) / (b-a))
+    X3 = np.tile(U[:, np.newaxis], (1, np.size(strike)))
 
-    X1 = np.tile(phi[:,np.newaxis], (1, np.size(K))) # N x d matrix
-    X2 = np.exp(1j * k[:, np.newaxis] * np.pi * (x-a) / (b-a)) # N x d matrix
-    X3 = np.tile(U[:, np.newaxis], (1, np.size(K))) # N x d matrix
+    # d-vector
+    ret = np.dot(unit, X1 * X2 * X3)
 
-    ret = np.dot(unit, X1 * X2 * X3) # d-vector
+    # d-vector
+    premium = strike * np.exp(- riskfree * maturity) * np.real(ret)
 
-    price = K * np.exp(- r * T) * np.real(ret) # d-vector
-
-    return price
+    return premium
 
 
 def xi(k,a,b,c,d):
