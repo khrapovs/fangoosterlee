@@ -8,7 +8,32 @@ Heston Stochastic Volatility model
 
 import numpy as np
 
-__all__ = ['Heston']
+__all__ = ['Heston', 'HestonParam']
+
+
+class HestonParam(object):
+
+    """Parameter storage.
+
+    """
+
+    def __init__(self, lm=1.5, mu=.12**2, eta=.57, rho=-.2, sigma=.12**2):
+        """Initialize class.
+
+        Parameters
+        ----------
+        lm : float
+        mu : float
+        eta : float
+        rho : float
+        sigma : float
+
+        """
+        self.lm = lm
+        self.mu = mu
+        self.eta = eta
+        self.rho = rho
+        self.sigma = sigma
 
 
 class Heston(object):
@@ -17,8 +42,8 @@ class Heston(object):
 
     Attributes
     ----------
-    sigma
-        Annualized volatility
+    param
+        Model parameters
 
     Methods
     -------
@@ -27,20 +52,20 @@ class Heston(object):
 
     """
 
-    def __init__(self, lm, mu, eta, rho, sigma, riskfree, maturity):
+    def __init__(self, param, riskfree, maturity):
         """Initialize the class.
 
         Parameters
         ----------
-        sigmma
-            Annualized volatility
+        param : HestonParam instance
+            Model parameters
+        riskfree : float
+            Risk-free rate, annualized
+        maturity : float
+            Fraction of a year
 
         """
-        self.lm = lm
-        self.mu = mu
-        self.eta = eta
-        self.rho = rho
-        self.sigma = sigma
+        self.param = param
         self.riskfree = riskfree
         self.maturity = maturity
 
@@ -62,75 +87,55 @@ class Heston(object):
             Values of characteristic function
 
         """
-        d = np.sqrt((self.lm - 1j * self.rho * self.eta * arg)**2 \
-            + (arg**2 + 1j * arg) * self.eta**2)
-        g = (self.lm - 1j * self.rho * self.eta * arg - d) \
-            / (self.lm - 1j * self.rho * self.eta * arg + d)
+        lm, mu, eta = self.param.lm, self.param.mu, self.param.eta
+        rho, sigma = self.param.rho, self.param.sigma
 
-        phi = np.exp(1j * arg * self.riskfree * self.maturity + self.sigma / self.eta**2 \
+        d = np.sqrt((lm - 1j * rho * eta * arg)**2 \
+            + (arg**2 + 1j * arg) * eta**2)
+        g = (lm - 1j * rho * eta * arg - d) \
+            / (lm - 1j * rho * eta * arg + d)
+
+        phi = np.exp(1j * arg * self.riskfree * self.maturity + sigma / eta**2 \
             * (1 - np.exp(-d * self.maturity)) \
             / (1 - g * np.exp(-d * self.maturity)) \
-            * (self.lm - 1j * self.rho * self.eta * arg - d))
+            * (lm - 1j * rho * eta * arg - d))
 
-        phi = phi * np.exp(self.lm * self.mu / self.eta**2 * \
-            (self.maturity * (self.lm - 1j * self.rho * self.eta * arg - d) \
+        phi = phi * np.exp(lm * mu / eta**2 * \
+            (self.maturity * (lm - 1j * rho * eta * arg - d) \
             - 2 * np.log((1-g * np.exp(-d * self.maturity)) / (1 - g))))
 
         return phi
 
     def cos_restriction(self):
+        """Restrictions used in COS function.
 
-        # Truncation for Heston:
+        Returns
+        -------
+        L : float
+        c1 : float
+        c2 : float
+        a : float
+        b : float
+
+        """
+
+        lm, mu, eta = self.param.lm, self.param.mu, self.param.eta
+        rho, sigma = self.param.rho, self.param.sigma
+
         L = 12
-        c1 = self.riskfree * self.maturity + (1 - np.exp(-self.lm * self.maturity)) \
-            * (self.mu - self.sigma) / 2 / self.lm - .5 * self.mu * self.maturity
+        c1 = self.riskfree * self.maturity + (1 - np.exp(-lm * self.maturity)) \
+            * (mu - sigma) / 2 / lm - .5 * mu * self.maturity
 
-        c2 = 1/(8 * self.lm**3) * (self.eta * self.maturity * self.lm * np.exp(-self.lm * self.maturity) \
-            * (self.sigma - self.mu) * (8 * self.lm * self.rho - 4 * self.eta) \
-            + self.lm * self.rho * self.eta * (1 - np.exp(-self.lm * self.maturity)) \
-            * (16 * self.mu - 8 * self.sigma) + 2 * self.mu * self.lm * self.maturity \
-            * (-4 * self.lm * self.rho * self.eta + self.eta**2 + 4 * self.lm**2) \
-            + self.eta**2 * ((self.mu - 2 * self.sigma) * np.exp(-2*self.lm*self.maturity) \
-            + self.mu * (6 * np.exp(-self.lm * self.maturity) - 7) + 2 * self.sigma) \
-            + 8 * self.lm**2 * (self.sigma - self.mu) * (1 - np.exp(-self.lm*self.maturity)))
+        c2 = 1/(8 * lm**3) * (eta * self.maturity * lm * np.exp(-lm * self.maturity) \
+            * (sigma - mu) * (8 * lm * rho - 4 * eta) \
+            + lm * rho * eta * (1 - np.exp(-lm * self.maturity)) \
+            * (16 * mu - 8 * sigma) + 2 * mu * lm * self.maturity \
+            * (-4 * lm * rho * eta + eta**2 + 4 * lm**2) \
+            + eta**2 * ((mu - 2 * sigma) * np.exp(-2*lm*self.maturity) \
+            + mu * (6 * np.exp(-lm * self.maturity) - 7) + 2 * sigma) \
+            + 8 * lm**2 * (sigma - mu) * (1 - np.exp(-lm*self.maturity)))
 
         a = c1 - L * np.sqrt(np.abs(c2)) # scalar
         b = c1 + L * np.sqrt(np.abs(c2)) # scalar
 
         return L, c1, c2, a, b
-
-
-
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Oct 23 09:25:19 2012
-
-@author: khrapov
-"""
-import numpy as np
-
-# Heston characteristic function
-def CFHeston(u, P):
-    # u is N-vector
-    # T,r,lm,meanV,eta,rho,v0 are scalars
-    # returns N-vector
-    T = P['T']
-    r = P['r']
-    lm = P['lm']
-    meanV = P['meanV']
-    eta = P['eta']
-    rho = P['rho']
-    v0 = P['v0']
-
-    d = np.sqrt((lm - 1j * rho * eta * u)**2 + (u**2 + 1j * u) * eta**2)
-    g = (lm - 1j * rho * eta * u - d) / (lm - 1j * rho * eta * u + d)
-
-    phi = np.exp(1j * u * r * T + v0 / eta**2 * (1 - np.exp(-d * T)) \
-        / (1 - g * np.exp(-d * T)) * (lm - 1j * rho * eta * u - d))
-
-    phi = phi * np.exp(lm * meanV / eta**2 * \
-        (T * (lm - 1j * rho * eta * u - d) \
-        - 2 * np.log((1-g * np.exp(-d * T)) / (1 - g))))
-
-    return phi

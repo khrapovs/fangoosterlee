@@ -8,7 +8,28 @@ Variance Gamma process
 
 import numpy as np
 
-__all__ = ['VarGamma']
+__all__ = ['VarGamma', 'VarGammaParam']
+
+
+class VarGammaParam(object):
+
+    """Parameter storage.
+
+    """
+
+    def __init__(self, theta=-.14, nu=.2, sigma=.25):
+        """Initialize class.
+
+        Parameters
+        ----------
+        nu : float
+        theta : float
+        sigma : float
+
+        """
+        self.sigma = sigma
+        self.nu = nu
+        self.theta = theta
 
 
 class VarGamma(object):
@@ -17,8 +38,8 @@ class VarGamma(object):
 
     Attributes
     ----------
-    sigma
-        Annualized volatility
+    param
+        Model parameters
 
     Methods
     -------
@@ -27,18 +48,20 @@ class VarGamma(object):
 
     """
 
-    def __init__(self, theta, nu, sigma, riskfree, maturity):
+    def __init__(self, param, riskfree, maturity):
         """Initialize the class.
 
         Parameters
         ----------
-        sigmma
-            Annualized volatility
+        param : VarGammaParam instance
+            Model parameters
+        riskfree : float
+            Risk-free rate, annualized
+        maturity : float
+            Fraction of a year
 
         """
-        self.theta = theta
-        self.nu = nu
-        self.sigma = sigma
+        self.param = param
         self.riskfree = riskfree
         self.maturity = maturity
 
@@ -49,10 +72,6 @@ class VarGamma(object):
         ----------
         arg : array_like
             Grid to evaluate the function
-        riskfree : float
-            Risk-free rate, annualized
-        maturity : float
-            Fraction of a year
 
         Returns
         -------
@@ -60,27 +79,38 @@ class VarGamma(object):
             Values of characteristic function
 
         """
-        omega = np.log(1 - self.theta * self.nu \
-            - self.sigma**2 * self.nu / 2) / self.nu
+        theta, nu, sigma = self.param.theta, self.param.nu, self.param.sigma
+        omega = np.log(1 - theta * nu \
+            - sigma**2 * nu / 2) / nu
         phi = np.exp(arg * (self.riskfree + omega) \
             * self.maturity * 1j)
-        phi = phi * ((1 - 1j * self.theta * self.nu * arg \
-            + self.sigma**2 * self.nu * arg**2 / 2) \
-            ** (- self.maturity / self.nu))
+        phi = phi * ((1 - 1j * theta * nu * arg \
+            + sigma**2 * nu * arg**2 / 2) \
+            ** (- self.maturity / nu))
 
         return phi
 
     def cos_restriction(self):
+        """Restrictions used in COS function.
 
-        # Truncation rate
-        # Truncation rate
-        L = 10 # scalar
-        c1 = (self.riskfree + self.theta) * self.maturity
-        c2 = (self.sigma**2 + self.nu * self.theta**2) * self.maturity
-        c4 = 3 * (self.sigma**4 * self.nu + 2 * self.theta**4 * self.nu**3 \
-            + 4 * self.sigma**2 * self.theta**2 * self.nu**2) * self.maturity
+        Returns
+        -------
+        L : float
+        c1 : float
+        c2 : float
+        a : float
+        b : float
 
-        a = c1 - L * np.sqrt(c2 + np.sqrt(c4)) # scalar
-        b = c1 + L * np.sqrt(c2 + np.sqrt(c4)) # scalar
+        """
+
+        theta, nu, sigma = self.param.theta, self.param.nu, self.param.sigma
+        L = 10
+        c1 = (self.riskfree + theta) * self.maturity
+        c2 = (sigma**2 + nu * theta**2) * self.maturity
+        c4 = 3 * (sigma**4 * nu + 2 * theta**4 * nu**3 \
+            + 4 * sigma**2 * theta**2 * nu**2) * self.maturity
+
+        a = c1 - L * np.sqrt(c2 + np.sqrt(c4))
+        b = c1 + L * np.sqrt(c2 + np.sqrt(c4))
 
         return L, c1, c2, a, b

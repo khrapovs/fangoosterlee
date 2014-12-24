@@ -20,6 +20,10 @@ class GBMParam(object):
     def __init__(self, sigma=.2):
         """Initialize class.
 
+        Parameters
+        ----------
+        sigma : float
+
         """
         self.sigma = sigma
 
@@ -30,8 +34,8 @@ class GBM(object):
 
     Attributes
     ----------
-    sigma
-        Annualized volatility
+    param
+        Model parameters
 
     Methods
     -------
@@ -48,7 +52,7 @@ class GBM(object):
         Parameters
         ----------
         param : GBMParam instance
-            Model parameter
+            Model parameters
         riskfree : float
             Risk-free rate, annualized
         maturity : float
