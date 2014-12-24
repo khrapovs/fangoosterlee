@@ -54,6 +54,8 @@ class ARG(object):
     -------
     charfun
         Characteristic function
+    cos_restriction
+        Restrictions used in COS function
 
     """
 
@@ -62,8 +64,12 @@ class ARG(object):
 
         Parameters
         ----------
-        sigmma
-            Annualized volatility
+        param : ARGParam instance
+            Model parameters
+        riskfree : float
+            Risk-free rate, annualized
+        maturity : float
+            Fraction of a year
 
         """
         self.param = param

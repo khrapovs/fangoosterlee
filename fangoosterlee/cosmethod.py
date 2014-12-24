@@ -31,6 +31,17 @@ __all__ = ['cosmethod']
 def cosmethod(model, S=100, K=90, T=.1, r=0, call=True):
     """COS method.
 
+    Parameters
+    ----------
+    model : instance of specific model class
+        Grid to evaluate the function
+    riskfree : float
+        Risk-free rate, annualized
+    maturity : float
+        Fraction of a year
+
+    Returns
+    -------
 
     """
     N = 2**10

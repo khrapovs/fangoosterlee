@@ -5,11 +5,18 @@ Usage examples of Fang-Oosterlee COS method
 -------------------------------------------
 
 """
+from __future__ import division, print_function
+
+import numpy as np
 
 from fangoosterlee import (GBM, GBMParam, VarGamma, VarGammaParam,
                            Heston, HestonParam, ARG, ARGParam, cosmethod)
 
+
 def single_premium():
+    """Test COS method for floats.
+
+    """
     S, K = 100, 90
     riskfree, maturity = 0, 30/365
     sigma = .15
@@ -50,5 +57,21 @@ def single_premium():
     print(premium)
 
 
+def multiple_premia():
+    """Test COS method on the grid.
+
+    """
+    S = 100
+    K = np.exp(np.linspace(-.1, .1, 10))
+    riskfree, maturity = 0, 30/365
+    sigma = .15
+
+    model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
+    premium = cosmethod(model, S=S, K=K, T=maturity, r=riskfree, call=True)
+    print(premium)
+
+
 if __name__ == '__main__':
-    single_premium()
+
+    #single_premium()
+    multiple_premia()

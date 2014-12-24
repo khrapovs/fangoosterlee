@@ -49,6 +49,8 @@ class Heston(object):
     -------
     charfun
         Characteristic function
+    cos_restriction
+        Restrictions used in COS function
 
     """
 
