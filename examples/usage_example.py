@@ -6,11 +6,12 @@ Usage examples of Fang-Oosterlee COS method
 
 """
 
-from fangoosterlee import GBM, VarGamma, Heston, ARG, cosmethod
+from fangoosterlee import GBM, GBMParam, VarGamma, Heston, ARG, cosmethod
 
-sigma, riskfree, maturity = .15, 0, 30/365
+riskfree, maturity = 0, 30/365
+sigma = .15
 
-model = GBM(sigma, riskfree, maturity)
+model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
 premium = cosmethod(model, S=100, K=90, T=.1, r=riskfree, call=True)
 print(premium)
 

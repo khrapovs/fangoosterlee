@@ -8,7 +8,20 @@ Geometric Brownian Motion
 
 import numpy as np
 
-__all__ = ['GBM']
+__all__ = ['GBM', 'GBMParam']
+
+
+class GBMParam(object):
+
+    """Parameter storage.
+
+    """
+
+    def __init__(self, sigma=.2):
+        """Initialize class.
+
+        """
+        self.sigma = sigma
 
 
 class GBM(object):
@@ -24,19 +37,25 @@ class GBM(object):
     -------
     charfun
         Characteristic function
+    cos_restriction
+        Restrictions used in COS function
 
     """
 
-    def __init__(self, sigma, riskfree, maturity):
+    def __init__(self, param, riskfree, maturity):
         """Initialize the class.
 
         Parameters
         ----------
-        sigmma
-            Annualized volatility
+        param : GBMParam instance
+            Model parameter
+        riskfree : float
+            Risk-free rate, annualized
+        maturity : float
+            Fraction of a year
 
         """
-        self.sigma = sigma
+        self.param = param
         self.riskfree = riskfree
         self.maturity = maturity
 
@@ -47,10 +66,6 @@ class GBM(object):
         ----------
         arg : array_like
             Grid to evaluate the function
-        riskfree : float
-            Risk-free rate, annualized
-        maturity : float
-            Fraction of a year
 
         Returns
         -------
@@ -59,14 +74,24 @@ class GBM(object):
 
         """
         return np.exp(arg * self.riskfree * self.maturity * 1j
-                      - arg**2 * self.sigma**2 * self.maturity / 2)
+                      - arg**2 * self.param.sigma**2 * self.maturity / 2)
 
     def cos_restriction(self):
+        """Restrictions used in COS function.
 
+        Returns
+        -------
+        L : float
+        c1 : float
+        c2 : float
+        a : float
+        b : float
+
+        """
         # Truncation rate
         L = 100
         c1 = self.riskfree * self.maturity
-        c2 = self.sigma**2 * self.maturity
+        c2 = self.param.sigma**2 * self.maturity
 
         a = c1 - L * np.sqrt(c2)
         b = c1 + L * np.sqrt(c2)
