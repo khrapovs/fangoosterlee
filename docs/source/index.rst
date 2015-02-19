@@ -6,17 +6,17 @@
 .. toctree::
    :maxdepth: 2
 
-.. automodule:: fangoosterlee.fangoosterlee.cosmethod
+.. automodule:: fangoosterlee.cosmethod
 	:members: cosmethod
 
-.. automodule:: fangoosterlee.examples.gbm
+.. automodule:: examples.gbm
 	:members:
 
-.. automodule:: fangoosterlee.examples.heston
+.. automodule:: examples.heston
 	:members:
 
-.. automodule:: fangoosterlee.examples.vargamma
+.. automodule:: examples.vargamma
 	:members:
 
-.. automodule:: fangoosterlee.examples.argamma
+.. automodule:: examples.argamma
 	:members:
