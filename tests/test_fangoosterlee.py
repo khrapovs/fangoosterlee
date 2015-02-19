@@ -101,7 +101,7 @@ class COSTestCase(ut.TestCase):
 
         model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
 
-        grid, density = cfinverse(model.charfun, points=points)
+        grid, density = cfinverse(model.charfun, points=points, A=-1e5, B=1e5)
 
         loc = (riskfree - sigma**2/2) * maturity
         scale = sigma**2 * maturity
@@ -113,7 +113,7 @@ class COSTestCase(ut.TestCase):
         good = np.abs(grid) < 2
 
         np.testing.assert_array_almost_equal(density[good], norm_density[good],
-                                             decimal=0)
+                                             decimal=2)
 
 if __name__ == '__main__':
     ut.main()

@@ -13,7 +13,7 @@ import numpy as np
 __all__ = ['cfinverse']
 
 
-def cfinverse(psi, A=-1e2, B=1e2, points=1e5):
+def cfinverse(psi, A=-1e5, B=1e5, points=1e5):
     """Discrete Fourier inverse.
 
     Inverts characteristic function to obtain the density.
