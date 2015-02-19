@@ -9,6 +9,9 @@
 .. automodule:: fangoosterlee.cosmethod
 	:members: cosmethod
 
+.. automodule:: fangoosterlee.cfinverse
+	:members: cfinverse
+
 .. automodule:: examples.gbm
 	:members:
 

@@ -15,7 +15,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),\
     os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-from fangoosterlee.fangoosterlee import cosmethod
+from fangoosterlee.fangoosterlee import cosmethod, cfinverse
 from fangoosterlee.examples import (GBM, GBMParam, VarGamma, VarGammaParam,
                         Heston, HestonParam)
 
@@ -90,6 +90,20 @@ class COSTestCase(ut.TestCase):
                             maturity=maturity, riskfree=riskfree, call=True)
 
         self.assertEqual(premium.shape, strike.shape)
+
+    def test_cfinverse(self):
+        """Test Fourier inversion."""
+
+        riskfree, maturity = 0, 30/365
+        sigma = .15
+        points = int(1e4)
+
+        model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
+
+        grid, density = cfinverse(model.charfun, points=points)
+
+        self.assertEqual(grid.shape, (points,))
+        self.assertEqual(density.shape, (points,))
 
 
 if __name__ == '__main__':
