@@ -21,6 +21,7 @@ from fangoosterlee.fangoosterlee import cosmethod, cfinverse
 from fangoosterlee.examples import (GBM, GBMParam, VarGamma, VarGammaParam,
                                     Heston, HestonParam, ARG, ARGParam)
 
+
 class COSTestCase(ut.TestCase):
     """Test COS method."""
 
