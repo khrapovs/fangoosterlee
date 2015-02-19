@@ -77,7 +77,7 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
     # N-vector
     unit = np.append(.5, np.ones(N-1))
 
-    L, c1, c2, a, b = model.cos_restriction(riskfree=riskfree)
+    L, c1, c2, a, b = model.cos_restriction()
 
     if call:
         # N-vector

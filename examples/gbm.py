@@ -80,7 +80,7 @@ class GBM(object):
         return np.exp(arg * self.riskfree * self.maturity * 1j
                       - arg**2 * self.param.sigma**2 * self.maturity / 2)
 
-    def cos_restriction(self, riskfree=None):
+    def cos_restriction(self):
         """Restrictions used in COS function.
 
         Returns
@@ -94,7 +94,7 @@ class GBM(object):
         """
         # Truncation rate
         L = 100
-        c1 = riskfree * self.maturity
+        c1 = self.riskfree * self.maturity
         c2 = self.param.sigma**2 * self.maturity
 
         a = c1 - L * c2**.5
