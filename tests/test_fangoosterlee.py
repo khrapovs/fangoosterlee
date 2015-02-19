@@ -6,11 +6,17 @@
 from __future__ import print_function, division
 
 import unittest as ut
+import os
+import sys
 
-from ..fangoosterlee import cosmethod
-from ..examples import (GBM, GBMParam, VarGamma, VarGammaParam,
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),\
+    os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+
+from fangoosterlee.fangoosterlee import cosmethod
+from fangoosterlee.examples import (GBM, GBMParam, VarGamma, VarGammaParam,
                         Heston, HestonParam)
-
 
 class COSTestCase(ut.TestCase):
     """Test COS method."""
