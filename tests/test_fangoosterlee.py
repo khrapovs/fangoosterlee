@@ -9,6 +9,7 @@ import os
 import sys
 import unittest as ut
 import numpy as np
+import scipy.stats as scs
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),\
@@ -96,15 +97,23 @@ class COSTestCase(ut.TestCase):
 
         riskfree, maturity = 0, 30/365
         sigma = .15
-        points = int(1e4)
+        points = int(1e5)
 
         model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
 
         grid, density = cfinverse(model.charfun, points=points)
 
+        loc = (riskfree - sigma**2/2) * maturity
+        scale = sigma**2 * maturity
+        norm_density = scs.norm.pdf(grid, loc=loc, scale=scale**.5)
+
         self.assertEqual(grid.shape, (points,))
         self.assertEqual(density.shape, (points,))
 
+        good = np.abs(grid) < 2
+
+        np.testing.assert_array_almost_equal(density[good], norm_density[good],
+                                             decimal=1)
 
 if __name__ == '__main__':
     ut.main()
