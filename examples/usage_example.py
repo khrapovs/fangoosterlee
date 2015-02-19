@@ -11,8 +11,11 @@ import numpy as np
 import matplotlib.pylab as plt
 import seaborn as sns
 
-from fangoosterlee import (GBM, GBMParam, VarGamma, VarGammaParam,
-                           Heston, HestonParam, ARG, ARGParam, cosmethod)
+from gbm import GBM, GBMParam
+from vargamma import VarGamma, VarGammaParam
+from heston import Heston, HestonParam
+from argamma import ARG, ARGParam
+from fangoosterlee import cosmethod
 
 
 def single_premium():
