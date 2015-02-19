@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/khrapovs/fangoosterlee.svg
+    :target: https://travis-ci.org/khrapovs/fangoosterlee
+    
 .. image:: https://readthedocs.org/projects/fangoosterlee/badge/?version=latest
 	:target: https://readthedocs.org/projects/fangoosterlee/?badge=latest
 	:alt: Documentation Status
