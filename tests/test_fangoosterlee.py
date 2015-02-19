@@ -113,7 +113,7 @@ class COSTestCase(ut.TestCase):
         good = np.abs(grid) < 2
 
         np.testing.assert_array_almost_equal(density[good], norm_density[good],
-                                             decimal=1)
+                                             decimal=0)
 
 if __name__ == '__main__':
     ut.main()

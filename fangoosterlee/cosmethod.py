@@ -18,9 +18,6 @@ References
     *SIAM Journal on Scientific Computing*, 31(2), 826. doi:10.1137/080718061
     <http://ta.twi.tudelft.nl/mf/users/oosterle/oosterlee/COS.pdf>
 
-Examples
---------
-
 """
 from __future__ import division, print_function
 
