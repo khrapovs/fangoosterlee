@@ -7,10 +7,9 @@ from __future__ import print_function, division
 
 import unittest as ut
 
-from fangoosterlee import cosmethod
-from gbm import GBM, GBMParam
-from vargamma import VarGamma, VarGammaParam
-from heston import Heston, HestonParam
+from ..fangoosterlee import cosmethod
+from ..examples import (GBM, GBMParam, VarGamma, VarGammaParam,
+                        Heston, HestonParam)
 
 
 class COSTestCase(ut.TestCase):
