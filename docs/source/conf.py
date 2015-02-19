@@ -23,13 +23,11 @@ import os
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # -- Khrapov --------------------------------------------------------------
-sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../../../'))
 
 import mock
 
-MOCK_MODULES = ['numpy', 'seaborn', 'matplotlib', 'matplotlib.pylab',
-                'statsmodels', 'statsmodels.tsa', 'statsmodels.tsa.tsatools',
-                'scipy', 'scipy.stats', 'scipy.optimize', 'scipy.linalg']
+MOCK_MODULES = ['numpy', 'seaborn', 'matplotlib', 'matplotlib.pylab', 'scipy']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
