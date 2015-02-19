@@ -102,7 +102,7 @@ class Heston(object):
 
         return phi
 
-    def cos_restriction(self):
+    def cos_restriction(self, riskfree=None):
         """Restrictions used in COS function.
 
         Returns
@@ -119,7 +119,7 @@ class Heston(object):
         rho, sigma = self.param.rho, self.param.sigma
 
         L = 12
-        c1 = self.riskfree * self.maturity \
+        c1 = riskfree * self.maturity \
             + (1 - np.exp(-lm * self.maturity)) \
             * (mu - sigma)/2/lm - mu * self.maturity / 2
 

@@ -89,7 +89,7 @@ class VarGamma(object):
 
         return phi
 
-    def cos_restriction(self):
+    def cos_restriction(self, riskfree=None):
         """Restrictions used in COS function.
 
         Returns
@@ -104,7 +104,7 @@ class VarGamma(object):
 
         theta, nu, sigma = self.param.theta, self.param.nu, self.param.sigma
         L = 10
-        c1 = (self.riskfree + theta) * self.maturity
+        c1 = (riskfree + theta) * self.maturity
         c2 = (sigma**2 + nu * theta**2) * self.maturity
         c4 = 3 * (sigma**4 * nu + 2 * theta**4 * nu**3 \
             + 4 * sigma**2 * theta**2 * nu**2) * self.maturity

@@ -146,7 +146,7 @@ class ARG(object):
         psi = psi * np.exp(- 1j * arg * self.riskfree * self.maturity)
         return psi
 
-    def cos_restriction(self):
+    def cos_restriction(self, riskfree=None):
         """Restrictions used in COS function.
 
         Returns
@@ -159,7 +159,7 @@ class ARG(object):
 
         """
         L = 100
-        c1 = self.riskfree * self.maturity
+        c1 = riskfree * self.maturity
         c2 = self.param.mu * self.maturity * 365
 
         a = c1 - L * c2**.5

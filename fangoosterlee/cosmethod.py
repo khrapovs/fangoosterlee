@@ -37,10 +37,14 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
             - cos_restriction
     price : array_like
         Current asset price
-    riskfree : array_like
-        Risk-free rate, annualized
+    strike : array_like
+        Strike price of the contract
     maturity : float
         Fraction of a year
+    riskfree : array_like
+        Risk-free rate, annualized
+    call : bool
+        Call/Put flag
 
     Returns
     -------
@@ -49,11 +53,13 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
 
     Notes
     -----
-    `charfun` method of `model` instance should depend on
+    `charfun` method (risk-neutral conditional chracteristic function)
+    of `model` instance should depend on
     one argument only (array_like) and should return
     array_like of the same dimension.
 
-    `cos_restriction` method of `model` instance does not tak any arguments,
+    `cos_restriction` method of `model` instance takes `maturity`
+    and `riskfree` as float arguments,
     and returns five floats (L, c1, c2, a, b).
 
     """
@@ -71,7 +77,7 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
     # N-vector
     unit = np.append(.5, np.ones(N-1))
 
-    L, c1, c2, a, b = model.cos_restriction()
+    L, c1, c2, a, b = model.cos_restriction(riskfree=riskfree)
 
     if call:
         # N-vector
