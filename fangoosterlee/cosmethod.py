@@ -47,6 +47,15 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
     premium : array_like
         Option premium
 
+    Notes
+    -----
+    `charfun` method of `model` instance should depend on
+    one argument only (array_like) and should return
+    array_like of the same dimension.
+
+    `cos_restriction` method of `model` instance does not tak any arguments,
+    and returns five floats (L, c1, c2, a, b).
+
     """
     if not hasattr(model, 'charfun'):
         raise Exception('Characteristic function is not available!')
