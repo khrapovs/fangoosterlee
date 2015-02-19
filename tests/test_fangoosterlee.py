@@ -5,9 +5,10 @@
 """
 from __future__ import print_function, division
 
-import unittest as ut
 import os
 import sys
+import unittest as ut
+import numpy as np
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),\
@@ -32,7 +33,14 @@ class COSTestCase(ut.TestCase):
         model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
         premium = cosmethod(model, price=price, strike=strike,
                             maturity=maturity, riskfree=riskfree, call=True)
+
         self.assertEqual(premium.shape, (1,))
+
+        strike = np.exp(np.linspace(-.1, .1, 10))
+        premium = cosmethod(model, price=price, strike=strike,
+                            maturity=maturity, riskfree=riskfree, call=True)
+
+        self.assertEqual(premium.shape, strike.shape)
 
     def test_vargamma(self):
         """Test VarGamma model."""
@@ -50,6 +58,13 @@ class COSTestCase(ut.TestCase):
                             maturity=maturity, riskfree=riskfree, call=True)
 
         self.assertEqual(premium.shape, (1,))
+
+        strike = np.exp(np.linspace(-.1, .1, 10))
+        premium = cosmethod(model, price=price, strike=strike,
+                            maturity=maturity, riskfree=riskfree, call=True)
+
+        self.assertEqual(premium.shape, strike.shape)
+
 
     def test_heston(self):
         """Test Heston model."""
@@ -69,6 +84,12 @@ class COSTestCase(ut.TestCase):
                             maturity=maturity, riskfree=riskfree, call=True)
 
         self.assertEqual(premium.shape, (1,))
+
+        strike = np.exp(np.linspace(-.1, .1, 10))
+        premium = cosmethod(model, price=price, strike=strike,
+                            maturity=maturity, riskfree=riskfree, call=True)
+
+        self.assertEqual(premium.shape, strike.shape)
 
 
 if __name__ == '__main__':
