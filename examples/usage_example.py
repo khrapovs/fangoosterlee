@@ -11,9 +11,9 @@ import numpy as np
 import matplotlib.pylab as plt
 import seaborn as sns
 
-from fangoosterlee.examples import (GBM, GBMParam, VarGamma, VarGammaParam,
+from fangoosterlee import (GBM, GBMParam, VarGamma, VarGammaParam,
                                     Heston, HestonParam, ARG, ARGParam)
-from fangoosterlee.fangoosterlee import cosmethod
+from fangoosterlee import cosmethod
 
 
 def single_premium():
@@ -76,7 +76,7 @@ def multiple_premia():
     model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
     premium = cosmethod(model, price=price, strike=strike, maturity=maturity,
                         riskfree=riskfree, call=True)
-    plt.plot(premium)
+    plt.plot(strike, premium)
     plt.show()
 
 
