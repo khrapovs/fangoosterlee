@@ -17,8 +17,8 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),\
     os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-from fangoosterlee.fangoosterlee import cosmethod, cfinverse
-from fangoosterlee.examples import (GBM, GBMParam, VarGamma, VarGammaParam,
+from .. import cosmethod, cfinverse
+from .. import (GBM, GBMParam, VarGamma, VarGammaParam,
                                     Heston, HestonParam, ARG, ARGParam)
 
 
