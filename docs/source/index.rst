@@ -12,14 +12,14 @@
 .. automodule:: fangoosterlee.cfinverse
 	:members: cfinverse
 
-.. automodule:: examples.gbm
+.. automodule:: fangoosterlee.gbm
 	:members:
 
-.. automodule:: examples.heston
+.. automodule:: fangoosterlee.heston
 	:members:
 
-.. automodule:: examples.vargamma
+.. automodule:: fangoosterlee.vargamma
 	:members:
 
-.. automodule:: examples.argamma
+.. automodule:: fangoosterlee.argamma
 	:members:
