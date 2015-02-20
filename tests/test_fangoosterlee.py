@@ -5,20 +5,20 @@
 """
 from __future__ import print_function, division
 
-import os
-import sys
+#import os
+#import sys
 
 import unittest as ut
 import numpy as np
 import scipy.stats as scs
 
-PACKAGE_PARENT = '..'
-SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),\
-    os.path.expanduser(__file__))))
-sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+#PACKAGE_PARENT = '..'
+#SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),\
+#    os.path.expanduser(__file__))))
+#sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-from .. import cosmethod, cfinverse
-from .. import (GBM, GBMParam, VarGamma, VarGammaParam,
+from fangoosterlee import cosmethod, cfinverse
+from fangoosterlee import (GBM, GBMParam, VarGamma, VarGammaParam,
                                     Heston, HestonParam, ARG, ARGParam)
 
 
@@ -144,6 +144,7 @@ class COSTestCase(ut.TestCase):
 
         np.testing.assert_array_almost_equal(density[good], norm_density[good],
                                              decimal=2)
+
 
 if __name__ == '__main__':
     ut.main()
