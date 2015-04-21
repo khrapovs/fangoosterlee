@@ -12,7 +12,7 @@ import matplotlib.pylab as plt
 import seaborn as sns
 
 from fangoosterlee import (GBM, GBMParam, VarGamma, VarGammaParam,
-                                    Heston, HestonParam, ARG, ARGParam)
+                           Heston, HestonParam, ARG, ARGParam)
 from fangoosterlee import cosmethod
 
 
@@ -69,11 +69,30 @@ def multiple_premia():
 
     """
     price = 1
-    strike = np.exp(np.linspace(-.1, .1, 10))
+    strike = np.exp(np.linspace(-.1, .1, 2000))
     riskfree, maturity = 0, 30/365
     sigma = .15
 
     model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
+    premium = cosmethod(model, price=price, strike=strike, maturity=maturity,
+                        riskfree=riskfree, call=True)
+    plt.plot(strike, premium)
+    plt.show()
+
+    lm = 1.5768
+    mu = .12**2
+    eta = .5751
+    rho = -.0
+    sigma = .12**2
+
+    price = 1
+    nobs = 2000
+    strike = np.exp(np.linspace(-.1, .1, nobs))
+    maturity = 30/365
+    riskfree = .01
+
+    param = HestonParam(lm=lm, mu=mu, eta=eta, rho=rho, sigma=sigma)
+    model = Heston(param, riskfree, maturity)
     premium = cosmethod(model, price=price, strike=strike, maturity=maturity,
                         riskfree=riskfree, call=True)
     plt.plot(strike, premium)
