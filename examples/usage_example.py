@@ -86,10 +86,10 @@ def multiple_premia():
     sigma = .12**2
 
     price = 1
-    nobs = 2000
+    nobs = 500
     strike = np.exp(np.linspace(-.1, .1, nobs))
     maturity = 30/365
-    riskfree = .01
+    riskfree = .01 * np.ones(nobs)
 
     param = HestonParam(lm=lm, mu=mu, eta=eta, rho=rho, sigma=sigma)
     model = Heston(param, riskfree, maturity)
@@ -101,5 +101,6 @@ def multiple_premia():
 
 if __name__ == '__main__':
 
+    sns.set_context('notebook')
     single_premium()
     multiple_premia()

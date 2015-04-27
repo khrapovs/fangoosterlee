@@ -39,7 +39,7 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
         Current asset price
     strike : array_like
         Strike price of the contract
-    maturity : float
+    maturity : array_like
         Fraction of a year
     riskfree : array_like
         Risk-free rate, annualized
@@ -59,8 +59,8 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
     array_like of the same dimension.
 
     `cos_restriction` method of `model` instance takes `maturity`
-    and `riskfree` as float arguments,
-    and returns five floats (L, c1, c2, a, b).
+    and `riskfree` as array arguments,
+    and returns five corresponding arrays (L, c1, c2, a, b).
 
     """
     if not hasattr(model, 'charfun'):
@@ -68,61 +68,87 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
     if not hasattr(model, 'cos_restriction'):
         raise Exception('COS restriction is not available!')
 
-    N = 2**10
-
-    # d-vector
+    # (nobs, ) array
     moneyness = np.log(price / strike)
-    # N-vector
-    k = np.arange(N)
-    # N-vector
-    unit = np.append(.5, np.ones(N-1))
+
+    npoints = 2**10
+    # (npoints, 1) array
+    kvec = np.arange(npoints)[:, np.newaxis]
+    # (npoints, ) array
+    unit = np.append(.5, np.ones(npoints-1))
 
     L, c1, c2, a, b = model.cos_restriction()
 
-    if call:
-        # N-vector
-        U = 2 / (b - a) * (xi(k, a, b, 0, b) - psi(k, a, b, 0, b))
-    else:
-        # N-vector
-        U = - 2 / (b - a) * (xi(k, a, b, a, 0) - psi(k, a, b, a, 0))
+    umat = 2 / (b - a) * (call * (xi(kvec, a, b, 0, b) - psi(kvec, a, b, 0, b))
+        - np.logical_not(call) * (xi(kvec, a, b, a, 0)
+        - psi(kvec, a, b, a, 0)))
+    # (npoints, nobs) array
+    phi = model.charfun(kvec * np.pi / (b-a))
 
-    # N-vector
-    phi = model.charfun(k * np.pi / (b-a))
+    # (npoints, nobs) array
+    xmat = np.exp(1j * kvec * np.pi * (moneyness-a) / (b-a))
 
-    # N x d arrays
-    X1 = np.tile(phi[:, np.newaxis], (1, np.size(strike)))
-    X2 = np.exp(1j * k[:, np.newaxis] * np.pi * (moneyness-a) / (b-a))
-    X3 = np.tile(U[:, np.newaxis], (1, np.size(strike)))
+    # (nobs, ) array
+    ret = np.dot(unit, phi * umat * xmat)
 
-    # d-vector
-    ret = np.dot(unit, X1 * X2 * X3)
-
-    # d-vector
+    # (nobs, ) array
     premium = strike * np.exp(- riskfree * maturity) * np.real(ret)
 
     return premium
 
 
-def xi(k,a,b,c,d):
+def xi(k, a, b, c, d):
+    """Xi function.
+
+    Parameters
+    ----------
+    k : (n, 1) array
+    a : float or (m, ) array
+    b : float or (m, ) array
+    c : float or (m, ) array
+    d : float or (m, ) array
+
+    Returns
+    -------
+    (n, m) array
+
+    """
     # k is N-vector
     # a,b,c,d are scalars
     # returns N-vector
-    ret = 1 / (1 + (k * np.pi / (b-a)) ** 2) \
+    return 1 / (1 + (k * np.pi / (b-a)) ** 2) \
         * (np.cos(k * np.pi * (d-a)/(b-a)) * np.exp(d) \
         - np.cos(k * np.pi * (c-a)/(b-a)) * np.exp(c) \
         + k * np.pi / (b-a) * np.sin(k * np.pi * (d-a)/(b-a)) * np.exp(d) \
         - k * np.pi / (b-a) * np.sin(k * np.pi * (c-a)/(b-a)) * np.exp(c))
-    return ret
 
 
-def psi(k,a,b,c,d):
+def psi(k, a, b, c, d):
+    """Psi function.
+
+    Parameters
+    ----------
+    k : (n, 1) array
+    a : float or (m, ) array
+    b : float or (m, ) array
+    c : float or (m, ) array
+    d : float or (m, ) array
+
+    Returns
+    -------
+    (n, m) array
+
+    """
     # k is N-vector
     # a,b,c,d are scalars
     # returns N-vector
-    ret = (np.sin(k[1:] * np.pi * (d-a)/(b-a)) \
+    if isinstance(a, float):
+        size = 1
+    else:
+        size = a.size
+    out = (np.sin(k[1:] * np.pi * (d-a)/(b-a)) \
         - np.sin(k[1:] * np.pi * (c-a)/(b-a))) * (b-a) / k[1:] / np.pi
-    ret = np.append(d - c, ret)
-    return ret
+    return np.vstack([(d - c) * np.ones(size), out])
 
 
 if __name__ == '__main__':
