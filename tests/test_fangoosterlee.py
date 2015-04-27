@@ -39,6 +39,12 @@ class COSTestCase(ut.TestCase):
 
         self.assertEqual(premium.shape, strike.shape)
 
+        riskfree = np.zeros_like(strike)
+        premium = cosmethod(model, price=price, strike=strike,
+                            maturity=maturity, riskfree=riskfree, call=True)
+
+        self.assertEqual(premium.shape, strike.shape)
+
     def test_vargamma(self):
         """Test VarGamma model."""
 
@@ -57,6 +63,12 @@ class COSTestCase(ut.TestCase):
         self.assertEqual(premium.shape, (1,))
 
         strike = np.exp(np.linspace(-.1, .1, 10))
+        premium = cosmethod(model, price=price, strike=strike,
+                            maturity=maturity, riskfree=riskfree, call=True)
+
+        self.assertEqual(premium.shape, strike.shape)
+
+        riskfree = np.zeros_like(strike)
         premium = cosmethod(model, price=price, strike=strike,
                             maturity=maturity, riskfree=riskfree, call=True)
 
@@ -88,6 +100,12 @@ class COSTestCase(ut.TestCase):
 
         self.assertEqual(premium.shape, strike.shape)
 
+        riskfree = np.zeros_like(strike)
+        premium = cosmethod(model, price=price, strike=strike,
+                            maturity=maturity, riskfree=riskfree, call=True)
+
+        self.assertEqual(premium.shape, strike.shape)
+
     def test_argamma(self):
         """Test ARG model."""
 
@@ -111,6 +129,12 @@ class COSTestCase(ut.TestCase):
         self.assertEqual(premium.shape, (1,))
 
         strike = np.exp(np.linspace(-.1, .1, 10))
+        premium = cosmethod(model, price=price, strike=strike,
+                            maturity=maturity, riskfree=riskfree, call=True)
+
+        self.assertEqual(premium.shape, strike.shape)
+
+        riskfree = np.zeros_like(strike)
         premium = cosmethod(model, price=price, strike=strike,
                             maturity=maturity, riskfree=riskfree, call=True)
 
