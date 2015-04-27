@@ -23,11 +23,10 @@ def single_premium():
     price, strike = 100, 90
     riskfree, maturity = 0, 30/365
     sigma = .15
-    moneyness = np.log(strike/price)
+    moneyness = np.log(strike/price) - riskfree * maturity
 
     model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
-    premium = cosmethod(model, moneyness=moneyness, maturity=maturity,
-                        riskfree=riskfree, call=True)
+    premium = cosmethod(model, moneyness=moneyness, call=True)
     print(premium)
 
     nu = .2
@@ -35,8 +34,7 @@ def single_premium():
     sigma = .25
     param = VarGammaParam(theta=theta, nu=nu, sigma=sigma)
     model = VarGamma(param, riskfree, maturity)
-    premium = cosmethod(model, moneyness=moneyness, maturity=maturity,
-                        riskfree=riskfree, call=True)
+    premium = cosmethod(model, moneyness=moneyness, call=True)
     print(premium)
 
     lm = 1.5768
@@ -46,8 +44,7 @@ def single_premium():
     sigma = .12**2
     param = HestonParam(lm=lm, mu=mu, eta=eta, rho=rho, sigma=sigma)
     model = Heston(param, riskfree, maturity)
-    premium = cosmethod(model, moneyness=moneyness, maturity=maturity,
-                        riskfree=riskfree, call=True)
+    premium = cosmethod(model, moneyness=moneyness, call=True)
     print(premium)
 
     rho = .55
@@ -60,8 +57,7 @@ def single_premium():
     param = ARGParam(rho=rho, delta=delta, mu=mu, sigma=sigma,
                      phi=phi, theta1=theta1, theta2=theta2)
     model = ARG(param, riskfree, maturity)
-    premium = cosmethod(model, moneyness=moneyness, maturity=maturity,
-                        riskfree=riskfree, call=True)
+    premium = cosmethod(model, moneyness=moneyness, call=True)
     print(premium)
 
 
@@ -73,11 +69,10 @@ def multiple_premia():
     strike = np.exp(np.linspace(-.1, .1, 2000))
     riskfree, maturity = 0, 30/365
     sigma = .15
-    moneyness = np.log(strike/price)
+    moneyness = np.log(strike/price) - riskfree * maturity
 
     model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
-    premium = cosmethod(model, moneyness=moneyness, maturity=maturity,
-                        riskfree=riskfree, call=True)
+    premium = cosmethod(model, moneyness=moneyness, call=True)
     plt.plot(strike, premium)
     plt.show()
 
@@ -96,8 +91,7 @@ def multiple_premia():
 
     param = HestonParam(lm=lm, mu=mu, eta=eta, rho=rho, sigma=sigma)
     model = Heston(param, riskfree, maturity)
-    premium = cosmethod(model, moneyness=moneyness, maturity=maturity,
-                        riskfree=riskfree, call=True)
+    premium = cosmethod(model, moneyness=moneyness, call=True)
     plt.plot(strike, premium)
     plt.show()
 

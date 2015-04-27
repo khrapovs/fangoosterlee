@@ -26,7 +26,7 @@ import numpy as np
 __all__ = ['cosmethod']
 
 
-def cosmethod(model, moneyness=0., maturity=.1, riskfree=0, call=True):
+def cosmethod(model, moneyness=0., call=True):
     """COS method.
 
     Parameters
@@ -37,10 +37,6 @@ def cosmethod(model, moneyness=0., maturity=.1, riskfree=0, call=True):
             - cos_restriction
     moneyness : array_like
         Moneyness of the option, np.log(strike/price)
-    maturity : array_like
-        Fraction of a year
-    riskfree : array_like
-        Risk-free rate, annualized
     call : bool array_like
         Call/Put flag
 
@@ -87,7 +83,7 @@ def cosmethod(model, moneyness=0., maturity=.1, riskfree=0, call=True):
     ret = np.dot(unit, phi * umat * xmat)
 
     # (nobs, ) array
-    premium = np.exp(moneyness - riskfree * maturity) * np.real(ret)
+    premium = np.exp(moneyness) * np.real(ret)
 
     return premium
 
