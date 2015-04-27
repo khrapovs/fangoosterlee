@@ -54,7 +54,7 @@ def cosmethod(model, moneyness=0., call=True):
 
     `cos_restriction` method of `model` instance takes `maturity`
     and `riskfree` as array arguments,
-    and returns five corresponding arrays (a, b).
+    and returns two corresponding arrays (a, b).
 
     """
     if not hasattr(model, 'charfun'):
