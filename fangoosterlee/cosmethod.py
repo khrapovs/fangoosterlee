@@ -64,7 +64,7 @@ def cosmethod(model, moneyness=0., call=True):
 
     npoints = 2**10
     # (npoints, 1) array
-    kvec = np.arange(npoints)[:, np.newaxis]
+    kvec = np.arange(npoints)[:, np.newaxis] * np.pi
     # (npoints, ) array
     unit = np.append(.5, np.ones(npoints-1))
 
@@ -76,10 +76,10 @@ def cosmethod(model, moneyness=0., call=True):
     umat = 2 / (blim - alim) * (call * (xfun(*argc) - pfun(*argc))
         - np.logical_not(call) * (xfun(*argp) - pfun(*argp)))
     # (npoints, nobs) array
-    pmat = model.charfun(kvec * np.pi / (blim - alim))
+    pmat = model.charfun(kvec / (blim - alim))
 
     # (npoints, nobs) array
-    xmat = np.exp(-1j * np.pi * kvec * (moneyness + alim) / (blim - alim))
+    xmat = np.exp(-1j * kvec * (moneyness + alim) / (blim - alim))
 
     # (nobs, ) array
     return np.exp(moneyness) * np.dot(unit, pmat * umat * xmat).real
@@ -101,11 +101,10 @@ def xfun(k, a, b, c, d):
     (n, m) array
 
     """
-    return 1 / (1 + (k * np.pi / (b-a)) ** 2) \
-        * (np.cos(k * np.pi * (d-a)/(b-a)) * np.exp(d) \
-        - np.cos(k * np.pi * (c-a)/(b-a)) * np.exp(c) \
-        + k * np.pi / (b-a) * np.sin(k * np.pi * (d-a)/(b-a)) * np.exp(d) \
-        - k * np.pi / (b-a) * np.sin(k * np.pi * (c-a)/(b-a)) * np.exp(c))
+    k = k/(b-a)
+    return (np.cos(k * (d-a)) * np.exp(d) - np.cos(k * (c-a)) * np.exp(c) \
+        + k * (np.sin(k * (d-a)) * np.exp(d) - np.sin(k * (c-a)) * np.exp(c)))\
+        / (1 + k**2)
 
 
 def pfun(k, a, b, c, d):
@@ -124,13 +123,9 @@ def pfun(k, a, b, c, d):
     (n, m) array
 
     """
-    if isinstance(a, float):
-        size = 1
-    else:
-        size = a.size
-    out = (np.sin(k[1:] * np.pi * (d-a)/(b-a)) \
-        - np.sin(k[1:] * np.pi * (c-a)/(b-a))) * (b-a) / k[1:] / np.pi
-    return np.vstack([(d - c) * np.ones(size), out])
+    k = k/(b-a)
+    out = (np.sin(k[1:] * (d-a)) - np.sin(k[1:] * (c-a))) / k[1:]
+    return np.vstack([(d - c) * np.ones_like(a), out])
 
 
 if __name__ == '__main__':

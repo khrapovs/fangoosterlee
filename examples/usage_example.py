@@ -104,6 +104,6 @@ def multiple_premia_heston(nobs=2000):
 if __name__ == '__main__':
 
     sns.set_context('notebook')
-#    single_premium()
+    single_premium()
 #    multiple_premia_gbm()
-    multiple_premia_heston(1000)
+#    multiple_premia_heston(1000)
