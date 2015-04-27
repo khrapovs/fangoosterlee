@@ -26,7 +26,7 @@ import numpy as np
 __all__ = ['cosmethod']
 
 
-def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
+def cosmethod(model, moneyness=0., maturity=.1, riskfree=0, call=True):
     """COS method.
 
     Parameters
@@ -35,10 +35,8 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
         The method depends on availability of two methods:
             - charfun
             - cos_restriction
-    price : array_like
-        Current asset price
-    strike : array_like
-        Strike price of the contract
+    moneyness : array_like
+        Moneyness of the option, -np.log(strike/price)
     maturity : array_like
         Fraction of a year
     riskfree : array_like
@@ -69,7 +67,8 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
         raise Exception('COS restriction is not available!')
 
     # (nobs, ) array
-    moneyness = np.log(price / strike)
+#    moneyness = -np.log(strike/price)
+#    strike = np.exp(-moneyness)
 
     npoints = 2**10
     # (npoints, 1) array
@@ -92,7 +91,7 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
     ret = np.dot(unit, phi * umat * xmat)
 
     # (nobs, ) array
-    premium = strike * np.exp(- riskfree * maturity) * np.real(ret)
+    premium = np.exp(- moneyness - riskfree * maturity) * np.real(ret)
 
     return premium
 

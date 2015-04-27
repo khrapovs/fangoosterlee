@@ -22,32 +22,34 @@ class COSTestCase(ut.TestCase):
 
         price, strike = 100, 90
         riskfree, maturity = 0, 30/365
+        moneyness = -np.log(strike/price)
 
         sigma = .15
 
         model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
-        premium = cosmethod(model, price=price, strike=strike,
+        premium = cosmethod(model, moneyness=moneyness,
                             maturity=maturity, riskfree=riskfree, call=True)
 
         self.assertEqual(premium.shape, (1,))
 
-        strike = np.exp(np.linspace(-.1, .1, 10))
-        premium = cosmethod(model, price=price, strike=strike,
+        moneyness = np.linspace(-.1, .1, 10)
+        premium = cosmethod(model, moneyness=moneyness,
                             maturity=maturity, riskfree=riskfree, call=True)
 
-        self.assertEqual(premium.shape, strike.shape)
+        self.assertEqual(premium.shape, moneyness.shape)
 
-        riskfree = np.zeros_like(strike)
-        premium = cosmethod(model, price=price, strike=strike,
+        riskfree = np.zeros_like(moneyness)
+        premium = cosmethod(model, moneyness=moneyness,
                             maturity=maturity, riskfree=riskfree, call=True)
 
-        self.assertEqual(premium.shape, strike.shape)
+        self.assertEqual(premium.shape, moneyness.shape)
 
     def test_vargamma(self):
         """Test VarGamma model."""
 
         price, strike = 100, 90
         riskfree, maturity = 0, 30/365
+        moneyness = -np.log(strike/price)
 
         nu = .2
         theta = -.14
@@ -55,22 +57,22 @@ class COSTestCase(ut.TestCase):
 
         param = VarGammaParam(theta=theta, nu=nu, sigma=sigma)
         model = VarGamma(param, riskfree, maturity)
-        premium = cosmethod(model, price=price, strike=strike,
+        premium = cosmethod(model, moneyness=moneyness,
                             maturity=maturity, riskfree=riskfree, call=True)
 
         self.assertEqual(premium.shape, (1,))
 
-        strike = np.exp(np.linspace(-.1, .1, 10))
-        premium = cosmethod(model, price=price, strike=strike,
+        moneyness = np.linspace(-.1, .1, 10)
+        premium = cosmethod(model, moneyness=moneyness,
                             maturity=maturity, riskfree=riskfree, call=True)
 
-        self.assertEqual(premium.shape, strike.shape)
+        self.assertEqual(premium.shape, moneyness.shape)
 
-        riskfree = np.zeros_like(strike)
-        premium = cosmethod(model, price=price, strike=strike,
+        riskfree = np.zeros_like(moneyness)
+        premium = cosmethod(model, moneyness=moneyness,
                             maturity=maturity, riskfree=riskfree, call=True)
 
-        self.assertEqual(premium.shape, strike.shape)
+        self.assertEqual(premium.shape, moneyness.shape)
 
 
     def test_heston(self):
@@ -78,6 +80,7 @@ class COSTestCase(ut.TestCase):
 
         price, strike = 100, 90
         riskfree, maturity = 0, 30/365
+        moneyness = -np.log(strike/price)
 
         lm = 1.5768
         mu = .12**2
@@ -87,28 +90,29 @@ class COSTestCase(ut.TestCase):
 
         param = HestonParam(lm=lm, mu=mu, eta=eta, rho=rho, sigma=sigma)
         model = Heston(param, riskfree, maturity)
-        premium = cosmethod(model, price=price, strike=strike,
+        premium = cosmethod(model, moneyness=moneyness,
                             maturity=maturity, riskfree=riskfree, call=True)
 
         self.assertEqual(premium.shape, (1,))
 
-        strike = np.exp(np.linspace(-.1, .1, 10))
-        premium = cosmethod(model, price=price, strike=strike,
+        moneyness = np.linspace(-.1, .1, 10)
+        premium = cosmethod(model, moneyness=moneyness,
                             maturity=maturity, riskfree=riskfree, call=True)
 
-        self.assertEqual(premium.shape, strike.shape)
+        self.assertEqual(premium.shape, moneyness.shape)
 
-        riskfree = np.zeros_like(strike)
-        premium = cosmethod(model, price=price, strike=strike,
+        riskfree = np.zeros_like(moneyness)
+        premium = cosmethod(model, moneyness=moneyness,
                             maturity=maturity, riskfree=riskfree, call=True)
 
-        self.assertEqual(premium.shape, strike.shape)
+        self.assertEqual(premium.shape, moneyness.shape)
 
     def test_argamma(self):
         """Test ARG model."""
 
         price, strike = 100, 90
         riskfree, maturity = 0, 30/365
+        moneyness = -np.log(strike/price)
 
         rho = .55
         delta = .75
@@ -121,22 +125,22 @@ class COSTestCase(ut.TestCase):
         param = ARGParam(rho=rho, delta=delta, mu=mu, sigma=sigma,
                      phi=phi, theta1=theta1, theta2=theta2)
         model = ARG(param, riskfree, maturity)
-        premium = cosmethod(model, price=price, strike=strike,
+        premium = cosmethod(model, moneyness=moneyness,
                             maturity=maturity, riskfree=riskfree, call=True)
 
         self.assertEqual(premium.shape, (1,))
 
-        strike = np.exp(np.linspace(-.1, .1, 10))
-        premium = cosmethod(model, price=price, strike=strike,
+        moneyness = np.linspace(-.1, .1, 10)
+        premium = cosmethod(model, moneyness=moneyness,
                             maturity=maturity, riskfree=riskfree, call=True)
 
-        self.assertEqual(premium.shape, strike.shape)
+        self.assertEqual(premium.shape, moneyness.shape)
 
-        riskfree = np.zeros_like(strike)
-        premium = cosmethod(model, price=price, strike=strike,
+        riskfree = np.zeros_like(moneyness)
+        premium = cosmethod(model, moneyness=moneyness,
                             maturity=maturity, riskfree=riskfree, call=True)
 
-        self.assertEqual(premium.shape, strike.shape)
+        self.assertEqual(premium.shape, moneyness.shape)
 
     def test_cfinverse(self):
         """Test Fourier inversion."""
