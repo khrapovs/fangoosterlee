@@ -9,11 +9,9 @@ import unittest as ut
 import numpy as np
 import scipy.stats as scs
 
-from fangoosterlee import cosmethod, cfinverse
-from fangoosterlee import GBM, GBMParam
-from fangoosterlee import VarGamma, VarGammaParam
-from fangoosterlee import Heston, HestonParam
-from fangoosterlee import ARG, ARGParam
+from fangoosterlee import (cosmethod, cfinverse, GBM, GBMParam,
+                           VarGamma, VarGammaParam, Heston, HestonParam,
+                           ARG, ARGParam)
 
 
 class COSTestCase(ut.TestCase):

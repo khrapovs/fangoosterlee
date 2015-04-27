@@ -43,7 +43,7 @@ def cosmethod(model, price=100, strike=90, maturity=.1, riskfree=0, call=True):
         Fraction of a year
     riskfree : array_like
         Risk-free rate, annualized
-    call : bool
+    call : bool array_like
         Call/Put flag
 
     Returns
