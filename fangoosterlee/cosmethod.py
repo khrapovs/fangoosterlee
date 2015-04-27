@@ -82,9 +82,7 @@ def cosmethod(model, moneyness=0., call=True):
     xmat = np.exp(-1j * np.pi * kvec * (moneyness + alim) / (blim - alim))
 
     # (nobs, ) array
-    premium = np.exp(moneyness) * np.dot(unit, pmat * umat * xmat).real
-
-    return premium
+    return np.exp(moneyness) * np.dot(unit, pmat * umat * xmat).real
 
 
 def xfun(k, a, b, c, d):
