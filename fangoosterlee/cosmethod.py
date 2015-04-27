@@ -101,9 +101,6 @@ def xfun(k, a, b, c, d):
     (n, m) array
 
     """
-    # k is N-vector
-    # a,b,c,d are scalars
-    # returns N-vector
     return 1 / (1 + (k * np.pi / (b-a)) ** 2) \
         * (np.cos(k * np.pi * (d-a)/(b-a)) * np.exp(d) \
         - np.cos(k * np.pi * (c-a)/(b-a)) * np.exp(c) \
@@ -127,9 +124,6 @@ def pfun(k, a, b, c, d):
     (n, m) array
 
     """
-    # k is N-vector
-    # a,b,c,d are scalars
-    # returns N-vector
     if isinstance(a, float):
         size = 1
     else:
