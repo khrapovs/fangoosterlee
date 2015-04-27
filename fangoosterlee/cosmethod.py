@@ -47,7 +47,7 @@ def cosmethod(model, moneyness=0., maturity=.1, riskfree=0, call=True):
     Returns
     -------
     premium : array_like
-        Option premium
+        Option premium normalized by asset price
 
     Notes
     -----
@@ -58,7 +58,7 @@ def cosmethod(model, moneyness=0., maturity=.1, riskfree=0, call=True):
 
     `cos_restriction` method of `model` instance takes `maturity`
     and `riskfree` as array arguments,
-    and returns five corresponding arrays (L, c1, c2, a, b).
+    and returns five corresponding arrays (a, b).
 
     """
     if not hasattr(model, 'charfun'):
@@ -66,17 +66,13 @@ def cosmethod(model, moneyness=0., maturity=.1, riskfree=0, call=True):
     if not hasattr(model, 'cos_restriction'):
         raise Exception('COS restriction is not available!')
 
-    # (nobs, ) array
-#    moneyness = -np.log(strike/price)
-#    strike = np.exp(-moneyness)
-
     npoints = 2**10
     # (npoints, 1) array
     kvec = np.arange(npoints)[:, np.newaxis]
     # (npoints, ) array
     unit = np.append(.5, np.ones(npoints-1))
 
-    L, c1, c2, a, b = model.cos_restriction()
+    a, b = model.cos_restriction()
 
     umat = 2 / (b - a) * (call * (xi(kvec, a, b, 0, b) - psi(kvec, a, b, 0, b))
         - np.logical_not(call) * (xi(kvec, a, b, a, 0)

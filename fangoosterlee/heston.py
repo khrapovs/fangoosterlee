@@ -107,9 +107,6 @@ class Heston(object):
 
         Returns
         -------
-        L : float
-        c1 : float
-        c2 : float
         a : float
         b : float
 
@@ -136,4 +133,4 @@ class Heston(object):
         a = c1 - L * np.abs(c2)**.5
         b = c1 + L * np.abs(c2)**.5
 
-        return L, c1, c2, a, b
+        return a, b
