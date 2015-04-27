@@ -61,14 +61,15 @@ def single_premium():
     print(premium)
 
 
-def multiple_premia():
+def multiple_premia_gbm(nobs=2000):
     """Test COS method on the grid.
 
     """
-    price = 1
-    strike = np.exp(np.linspace(-.1, .1, 2000))
-    riskfree, maturity = 0, 30/365
     sigma = .15
+
+    price = 1
+    strike = np.exp(np.linspace(-.1, .1, nobs))
+    riskfree, maturity = 0, 30/365
     moneyness = np.log(strike/price) - riskfree * maturity
 
     model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
@@ -76,6 +77,11 @@ def multiple_premia():
     plt.plot(strike, premium)
     plt.show()
 
+
+def multiple_premia_heston(nobs=2000):
+    """Test COS method on the grid.
+
+    """
     lm = 1.5768
     mu = .12**2
     eta = .5751
@@ -83,11 +89,10 @@ def multiple_premia():
     sigma = .12**2
 
     price = 1
-    nobs = 500
     strike = np.exp(np.linspace(-.1, .1, nobs))
     maturity = 30/365
     riskfree = .01 * np.ones(nobs)
-    moneyness = np.log(strike/price)
+    moneyness = np.log(strike/price) - riskfree * maturity
 
     param = HestonParam(lm=lm, mu=mu, eta=eta, rho=rho, sigma=sigma)
     model = Heston(param, riskfree, maturity)
@@ -99,5 +104,6 @@ def multiple_premia():
 if __name__ == '__main__':
 
     sns.set_context('notebook')
-    single_premium()
-    multiple_premia()
+#    single_premium()
+#    multiple_premia_gbm()
+    multiple_premia_heston(1000)

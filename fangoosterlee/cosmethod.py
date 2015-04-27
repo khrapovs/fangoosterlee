@@ -36,7 +36,7 @@ def cosmethod(model, moneyness=0., call=True):
             - charfun
             - cos_restriction
     moneyness : array_like
-        Moneyness of the option, np.log(strike/price)
+        Moneyness of the option, np.log(strike/price) - riskfree * maturity
     call : bool array_like
         Call/Put flag
 
@@ -68,27 +68,26 @@ def cosmethod(model, moneyness=0., call=True):
     # (npoints, ) array
     unit = np.append(.5, np.ones(npoints-1))
 
-    a, b = model.cos_restriction()
+    alim, blim = model.cos_restriction()
 
-    umat = 2 / (b - a) * (call * (xi(kvec, a, b, 0, b) - psi(kvec, a, b, 0, b))
-        - np.logical_not(call) * (xi(kvec, a, b, a, 0)
-        - psi(kvec, a, b, a, 0)))
+    argc = (kvec, alim, blim, 0, blim)
+    argp = (kvec, alim, blim, alim, 0)
+
+    umat = 2 / (blim - alim) * (call * (xfun(*argc) - pfun(*argc))
+        - np.logical_not(call) * (xfun(*argp) - pfun(*argp)))
     # (npoints, nobs) array
-    phi = model.charfun(kvec * np.pi / (b-a))
+    pmat = model.charfun(kvec * np.pi / (blim - alim))
 
     # (npoints, nobs) array
-    xmat = np.exp(-1j * kvec * np.pi * (moneyness+a) / (b-a))
+    xmat = np.exp(-1j * np.pi * kvec * (moneyness + alim) / (blim - alim))
 
     # (nobs, ) array
-    ret = np.dot(unit, phi * umat * xmat)
-
-    # (nobs, ) array
-    premium = np.exp(moneyness) * np.real(ret)
+    premium = np.exp(moneyness) * np.dot(unit, pmat * umat * xmat).real
 
     return premium
 
 
-def xi(k, a, b, c, d):
+def xfun(k, a, b, c, d):
     """Xi function.
 
     Parameters
@@ -114,7 +113,7 @@ def xi(k, a, b, c, d):
         - k * np.pi / (b-a) * np.sin(k * np.pi * (c-a)/(b-a)) * np.exp(c))
 
 
-def psi(k, a, b, c, d):
+def pfun(k, a, b, c, d):
     """Psi function.
 
     Parameters
