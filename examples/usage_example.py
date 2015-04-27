@@ -23,7 +23,7 @@ def single_premium():
     price, strike = 100, 90
     riskfree, maturity = 0, 30/365
     sigma = .15
-    moneyness = -np.log(strike/price)
+    moneyness = np.log(strike/price)
 
     model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
     premium = cosmethod(model, moneyness=moneyness, maturity=maturity,
@@ -73,7 +73,7 @@ def multiple_premia():
     strike = np.exp(np.linspace(-.1, .1, 2000))
     riskfree, maturity = 0, 30/365
     sigma = .15
-    moneyness = -np.log(strike/price)
+    moneyness = np.log(strike/price)
 
     model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
     premium = cosmethod(model, moneyness=moneyness, maturity=maturity,
@@ -92,7 +92,7 @@ def multiple_premia():
     strike = np.exp(np.linspace(-.1, .1, nobs))
     maturity = 30/365
     riskfree = .01 * np.ones(nobs)
-    moneyness = -np.log(strike/price)
+    moneyness = np.log(strike/price)
 
     param = HestonParam(lm=lm, mu=mu, eta=eta, rho=rho, sigma=sigma)
     model = Heston(param, riskfree, maturity)

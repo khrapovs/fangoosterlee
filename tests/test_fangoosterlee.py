@@ -22,7 +22,7 @@ class COSTestCase(ut.TestCase):
 
         price, strike = 100, 90
         riskfree, maturity = 0, 30/365
-        moneyness = -np.log(strike/price)
+        moneyness = np.log(strike/price)
 
         sigma = .15
 
@@ -49,7 +49,7 @@ class COSTestCase(ut.TestCase):
 
         price, strike = 100, 90
         riskfree, maturity = 0, 30/365
-        moneyness = -np.log(strike/price)
+        moneyness = np.log(strike/price)
 
         nu = .2
         theta = -.14
@@ -80,7 +80,7 @@ class COSTestCase(ut.TestCase):
 
         price, strike = 100, 90
         riskfree, maturity = 0, 30/365
-        moneyness = -np.log(strike/price)
+        moneyness = np.log(strike/price)
 
         lm = 1.5768
         mu = .12**2
@@ -112,7 +112,7 @@ class COSTestCase(ut.TestCase):
 
         price, strike = 100, 90
         riskfree, maturity = 0, 30/365
-        moneyness = -np.log(strike/price)
+        moneyness = np.log(strike/price)
 
         rho = .55
         delta = .75

@@ -36,7 +36,7 @@ def cosmethod(model, moneyness=0., maturity=.1, riskfree=0, call=True):
             - charfun
             - cos_restriction
     moneyness : array_like
-        Moneyness of the option, -np.log(strike/price)
+        Moneyness of the option, np.log(strike/price)
     maturity : array_like
         Fraction of a year
     riskfree : array_like
@@ -81,13 +81,13 @@ def cosmethod(model, moneyness=0., maturity=.1, riskfree=0, call=True):
     phi = model.charfun(kvec * np.pi / (b-a))
 
     # (npoints, nobs) array
-    xmat = np.exp(1j * kvec * np.pi * (moneyness-a) / (b-a))
+    xmat = np.exp(-1j * kvec * np.pi * (moneyness+a) / (b-a))
 
     # (nobs, ) array
     ret = np.dot(unit, phi * umat * xmat)
 
     # (nobs, ) array
-    premium = np.exp(- moneyness - riskfree * maturity) * np.real(ret)
+    premium = np.exp(moneyness - riskfree * maturity) * np.real(ret)
 
     return premium
 
