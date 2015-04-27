@@ -67,26 +67,24 @@ def cosmethod(model, moneyness=0., call=True):
     kvec = np.arange(npoints)[:, np.newaxis] * np.pi
     # (npoints, ) array
     unit = np.append(.5, np.ones(npoints-1))
-
+    # (npoints, ) array
     alim, blim = model.cos_restriction()
-
+    # Arguments
     argc = (kvec, alim, blim, 0, blim)
     argp = (kvec, alim, blim, alim, 0)
-
-    umat = 2 / (blim - alim) * (call * (xfun(*argc) - pfun(*argc))
-        - np.logical_not(call) * (xfun(*argp) - pfun(*argp)))
+    put = np.logical_not(call)
+    # (npoints, nobs) array
+    umat = 2 / (blim - alim) * (call * xfun(*argc) - put * xfun(*argp))
     # (npoints, nobs) array
     pmat = model.charfun(kvec / (blim - alim))
-
     # (npoints, nobs) array
     xmat = np.exp(-1j * kvec * (moneyness + alim) / (blim - alim))
-
     # (nobs, ) array
     return np.exp(moneyness) * np.dot(unit, pmat * umat * xmat).real
 
 
 def xfun(k, a, b, c, d):
-    """Xi function.
+    """Xi-Psi function.
 
     Parameters
     ----------
@@ -102,30 +100,15 @@ def xfun(k, a, b, c, d):
 
     """
     k = k/(b-a)
-    return (np.cos(k * (d-a)) * np.exp(d) - np.cos(k * (c-a)) * np.exp(c) \
+
+    out0 = (np.cos(k * (d-a)) * np.exp(d) - np.cos(k * (c-a)) * np.exp(c)
         + k * (np.sin(k * (d-a)) * np.exp(d) - np.sin(k * (c-a)) * np.exp(c)))\
         / (1 + k**2)
 
+    out1 = (np.sin(k[1:] * (d-a)) - np.sin(k[1:] * (c-a))) / k[1:]
+    out1 = np.vstack([(d - c) * np.ones_like(a), out1])
 
-def pfun(k, a, b, c, d):
-    """Psi function.
-
-    Parameters
-    ----------
-    k : (n, 1) array
-    a : float or (m, ) array
-    b : float or (m, ) array
-    c : float or (m, ) array
-    d : float or (m, ) array
-
-    Returns
-    -------
-    (n, m) array
-
-    """
-    k = k/(b-a)
-    out = (np.sin(k[1:] * (d-a)) - np.sin(k[1:] * (c-a))) / k[1:]
-    return np.vstack([(d - c) * np.ones_like(a), out])
+    return out0 - out1
 
 
 if __name__ == '__main__':
