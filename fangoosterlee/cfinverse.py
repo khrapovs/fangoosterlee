@@ -13,7 +13,7 @@ import numpy as np
 __all__ = ['cfinverse']
 
 
-def cfinverse(psi, A=-1e5, B=1e5, points=1e5):
+def cfinverse(psi, alim=-1e5, blim=1e5, points=1e5):
     """Discrete Fourier inverse.
 
     Inverts characteristic function to obtain the density.
@@ -22,9 +22,9 @@ def cfinverse(psi, A=-1e5, B=1e5, points=1e5):
     ----------
     psi : function
         Characteristic function dependent only on u
-    A : float, optional
+    alim : float, optional
         Lower limit of integration
-    B : float, optional
+    blim : float, optional
         Upper limit of integration
     points : int, optional
         Number of discrete points for evaluation
@@ -37,11 +37,11 @@ def cfinverse(psi, A=-1e5, B=1e5, points=1e5):
         Density values
 
     """
-    eta = (points - 1) / points * 2 * np.pi / (B - A)
-    lmbd = (B - A) / (points - 1)
-    k = np.arange(points)
-    grid = A + lmbd * k
-    varg = eta * k
-    y = psi(varg) * np.exp(- 1j * A * varg) * eta / np.pi
-    density = np.fft.fft(y).real
+    eta = (points - 1) / points * 2 * np.pi / (blim - alim)
+    lmbd = (blim - alim) / (points - 1)
+    karg = np.arange(points)
+    grid = alim + lmbd * karg
+    varg = eta * karg
+    val = psi(varg) * np.exp(- 1j * alim * varg) * eta / np.pi
+    density = np.fft.fft(val).real
     return grid, density

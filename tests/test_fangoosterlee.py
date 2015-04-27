@@ -147,7 +147,8 @@ class COSTestCase(ut.TestCase):
 
         model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
 
-        grid, density = cfinverse(model.charfun, points=points, A=-1e5, B=1e5)
+        grid, density = cfinverse(model.charfun, points=points,
+                                  alim=-1e5, blim=1e5)
 
         loc = (riskfree - sigma**2/2) * maturity
         scale = sigma**2 * maturity
