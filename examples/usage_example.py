@@ -12,8 +12,7 @@ import matplotlib.pylab as plt
 import seaborn as sns
 
 from fangoosterlee import (GBM, GBMParam, VarGamma, VarGammaParam,
-                           Heston, HestonParam, ARG, ARGParam)
-from fangoosterlee import cosmethod
+                           Heston, HestonParam, ARG, ARGParam, cosmethod)
 
 
 def single_premium():
@@ -105,5 +104,5 @@ if __name__ == '__main__':
 
     sns.set_context('notebook')
     single_premium()
-#    multiple_premia_gbm()
-#    multiple_premia_heston(1000)
+    multiple_premia_gbm()
+    multiple_premia_heston(1000)

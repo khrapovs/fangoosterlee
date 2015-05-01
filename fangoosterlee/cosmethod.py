@@ -42,7 +42,7 @@ def cosmethod(model, moneyness=0., call=True):
 
     Returns
     -------
-    premium : array_like
+    array_like
         Option premium normalized by asset price
 
     Notes
