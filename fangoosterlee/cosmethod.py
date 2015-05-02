@@ -63,12 +63,12 @@ def cosmethod(model, moneyness=0., call=True):
         raise Exception('COS restriction is not available!')
 
     npoints = 2**10
-    # (npoints, 1) array
-    kvec = np.arange(npoints)[:, np.newaxis] * np.pi
-    # (npoints, ) array
-    unit = np.append(.5, np.ones(npoints-1))
     # (npoints, ) array
     alim, blim = model.cos_restriction()
+    # (npoints, 1) array
+    kvec = np.arange(npoints)[:, np.newaxis] * np.pi / (blim - alim)
+    # (npoints, ) array
+    unit = np.append(.5, np.ones(npoints-1))
     # Arguments
     argc = (kvec, alim, blim, 0, blim)
     argp = (kvec, alim, blim, alim, 0)
@@ -76,9 +76,9 @@ def cosmethod(model, moneyness=0., call=True):
     # (npoints, nobs) array
     umat = 2 / (blim - alim) * (call * xfun(*argc) - put * xfun(*argp))
     # (npoints, nobs) array
-    pmat = model.charfun(kvec / (blim - alim))
+    pmat = model.charfun(kvec)
     # (npoints, nobs) array
-    xmat = np.exp(-1j * kvec * (moneyness + alim) / (blim - alim))
+    xmat = np.exp(-1j * kvec * (moneyness + alim))
     # (nobs, ) array
     return np.exp(moneyness) * np.dot(unit, pmat * umat * xmat).real
 
@@ -99,8 +99,6 @@ def xfun(k, a, b, c, d):
     (n, m) array
 
     """
-    k = k/(b-a)
-
     out0 = (np.cos(k * (d-a)) * np.exp(d) - np.cos(k * (c-a)) * np.exp(c)
         + k * (np.sin(k * (d-a)) * np.exp(d) - np.sin(k * (c-a)) * np.exp(c)))\
         / (1 + k**2)

@@ -9,17 +9,9 @@ import unittest as ut
 import numpy as np
 import scipy.stats as scs
 
-import sys
-import os
-
-PACKAGE_PARENT = '..'
-SCRIPT_DIR = os.path.dirname(
-    os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
-sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
-
-from fangoosterlee.fangoosterlee import (cosmethod, cfinverse, GBM, GBMParam,
-                                         VarGamma, VarGammaParam,
-                                         Heston, HestonParam, ARG, ARGParam)
+from fangoosterlee import (cosmethod, cfinverse, GBM, GBMParam,
+                           VarGamma, VarGammaParam,
+                           Heston, HestonParam, ARG, ARGParam)
 
 
 class COSTestCase(ut.TestCase):
