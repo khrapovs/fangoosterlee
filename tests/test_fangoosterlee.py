@@ -21,8 +21,8 @@ class COSTestCase(ut.TestCase):
     def test_gbm(self):
         """Test GBM model."""
 
-        price, strike = 100, 90
-        riskfree, maturity = 0, 30/365
+        price, strike = 100, 110
+        riskfree, maturity = .01, 30/365
         call = True
         put = np.logical_not(call)
         moneyness = lfmoneyness(price, strike, riskfree, maturity)
@@ -32,28 +32,38 @@ class COSTestCase(ut.TestCase):
         model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
         premium = cosmethod(model, moneyness=moneyness, call=call)
         premium_true = blackscholes_norm(moneyness, maturity, sigma, call)
+        impvol_model = impvol_bisection(moneyness, maturity, premium, call)
 
         self.assertEqual(premium.shape, (1,))
         np.testing.assert_array_almost_equal(premium, premium_true, 3)
+        np.testing.assert_array_almost_equal(impvol_model, sigma, 2)
 
-        moneyness = np.linspace(-.1, .1, 10)
+        moneyness = np.linspace(0, .1, 10)
         premium = cosmethod(model, moneyness=moneyness, call=call)
         premium_true = blackscholes_norm(moneyness, maturity, sigma, call)
+        impvol_model = impvol_bisection(moneyness, maturity, premium, call)
+        impvol_true = np.ones_like(impvol_model) * sigma
 
         self.assertEqual(premium.shape, moneyness.shape)
-        np.testing.assert_array_almost_equal(premium, premium_true, 3)
+        np.testing.assert_array_almost_equal(premium, premium_true, 2)
+        np.testing.assert_array_almost_equal(impvol_model, impvol_true, 2)
 
         riskfree = np.zeros_like(moneyness)
         premium = cosmethod(model, moneyness=moneyness, call=call)
         premium_true = blackscholes_norm(moneyness, maturity, sigma, call)
+        impvol_model = impvol_bisection(moneyness, maturity, premium, call)
 
         self.assertEqual(premium.shape, moneyness.shape)
         np.testing.assert_array_almost_equal(premium, premium_true, 3)
+        np.testing.assert_array_almost_equal(impvol_model, sigma, 2)
 
+        moneyness = np.linspace(-.1, 0, 10)
         premium = cosmethod(model, moneyness=moneyness, call=put)
         premium_true = blackscholes_norm(moneyness, maturity, sigma, put)
+        impvol_model = impvol_bisection(moneyness, maturity, premium, put)
 
-        np.testing.assert_array_almost_equal(premium, premium_true, 3)
+        np.testing.assert_array_almost_equal(premium, premium_true, 2)
+        np.testing.assert_array_almost_equal(impvol_model, impvol_true, 2)
 
     def test_vargamma(self):
         """Test VarGamma model."""

@@ -90,7 +90,7 @@ class GBM(object):
 
         """
         # Truncation rate
-        L = 100
+        L = 10
         c1 = self.riskfree * self.maturity
         c2 = self.param.sigma**2 * self.maturity
 
