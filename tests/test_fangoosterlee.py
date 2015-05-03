@@ -9,6 +9,7 @@ import unittest as ut
 import numpy as np
 import scipy.stats as scs
 
+from impvol import impvol_bisection, blackscholes_norm, lfmoneyness
 from fangoosterlee import (cosmethod, cfinverse, GBM, GBMParam,
                            VarGamma, VarGammaParam,
                            Heston, HestonParam, ARG, ARGParam)
@@ -22,24 +23,37 @@ class COSTestCase(ut.TestCase):
 
         price, strike = 100, 90
         riskfree, maturity = 0, 30/365
-        moneyness = np.log(strike/price) - riskfree * maturity
+        call = True
+        put = np.logical_not(call)
+        moneyness = lfmoneyness(price, strike, riskfree, maturity)
 
         sigma = .15
 
         model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
-        premium = cosmethod(model, moneyness=moneyness, call=True)
+        premium = cosmethod(model, moneyness=moneyness, call=call)
+        premium_true = blackscholes_norm(moneyness, maturity, sigma, call)
 
         self.assertEqual(premium.shape, (1,))
+        np.testing.assert_array_almost_equal(premium, premium_true, 3)
 
         moneyness = np.linspace(-.1, .1, 10)
-        premium = cosmethod(model, moneyness=moneyness, call=True)
+        premium = cosmethod(model, moneyness=moneyness, call=call)
+        premium_true = blackscholes_norm(moneyness, maturity, sigma, call)
 
         self.assertEqual(premium.shape, moneyness.shape)
+        np.testing.assert_array_almost_equal(premium, premium_true, 3)
 
         riskfree = np.zeros_like(moneyness)
-        premium = cosmethod(model, moneyness=moneyness, call=True)
+        premium = cosmethod(model, moneyness=moneyness, call=call)
+        premium_true = blackscholes_norm(moneyness, maturity, sigma, call)
 
         self.assertEqual(premium.shape, moneyness.shape)
+        np.testing.assert_array_almost_equal(premium, premium_true, 3)
+
+        premium = cosmethod(model, moneyness=moneyness, call=put)
+        premium_true = blackscholes_norm(moneyness, maturity, sigma, put)
+
+        np.testing.assert_array_almost_equal(premium, premium_true, 3)
 
     def test_vargamma(self):
         """Test VarGamma model."""
