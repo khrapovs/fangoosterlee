@@ -9,7 +9,8 @@ import unittest as ut
 import numpy as np
 import scipy.stats as scs
 
-from impvol import impvol_bisection, blackscholes_norm, lfmoneyness
+from fangoosterlee.impvol import (impvol_bisection,
+                                  blackscholes_norm, lfmoneyness)
 from fangoosterlee import (cosmethod, cfinverse, GBM, GBMParam,
                            VarGamma, VarGammaParam,
                            Heston, HestonParam, ARG, ARGParam)
