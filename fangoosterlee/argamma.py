@@ -143,7 +143,7 @@ class ARG(object):
             + upsn(n-1, v)
 
         psi = np.exp( - psin(n, -1j * arg) * sigma - upsn(n, -1j * arg) )
-        psi = psi * np.exp(- 1j * arg * self.riskfree * self.maturity)
+
         return psi
 
     def cos_restriction(self):

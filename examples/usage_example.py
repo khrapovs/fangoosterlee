@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib.pylab as plt
 import seaborn as sns
 
+from fangoosterlee.impvol import impvol_bisection
 from fangoosterlee import (GBM, GBMParam, VarGamma, VarGammaParam,
                            Heston, HestonParam, ARG, ARGParam, cosmethod)
 
@@ -100,9 +101,44 @@ def multiple_premia_heston(nobs=2000):
     plt.show()
 
 
+def multiple_premia_argamma():
+    """Plot model-implied out-of-the-money premium for ARG model.
+
+    """
+    nobs = 200
+    moneyness = np.linspace(-.2, .2, nobs)
+    riskfree, maturity = .1, 30/365
+    call = np.ones_like(moneyness).astype(bool)
+    call[moneyness < 0] = False
+    current_vol = .2**2/365
+
+    rho = .9
+    delta = 1.1
+    phi = -.5
+    price_vol = -1000
+    price_ret = .6
+
+    param = ARGParam(rho=rho, delta=delta, mu=current_vol, sigma=current_vol,
+                     phi=phi, theta1=price_vol, theta2=price_ret)
+    model = ARG(param, riskfree, maturity)
+    premium = cosmethod(model, moneyness=moneyness, call=call)
+
+    vol = impvol_bisection(moneyness, maturity, premium, call)
+
+    fig, axes = plt.subplots(nrows=2, ncols=1)
+    axes[0].plot(moneyness, premium, label='premium')
+    axes[1].plot(moneyness, vol, label='impvol')
+    axes[0].legend()
+    axes[1].legend()
+    plt.show()
+
+
 if __name__ == '__main__':
 
     sns.set_context('notebook')
-    single_premium()
-    multiple_premia_gbm()
-    multiple_premia_heston(1000)
+
+#    single_premium()
+#    multiple_premia_gbm()
+#    multiple_premia_heston(1000)
+
+    multiple_premia_argamma()
