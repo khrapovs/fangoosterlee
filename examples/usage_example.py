@@ -115,7 +115,7 @@ def multiple_premia_argamma():
     rho = .9
     delta = 1.1
     phi = -.5
-    price_vol = -1000
+    price_vol = -1
     price_ret = .6
 
     param = ARGParam(rho=rho, delta=delta, mu=current_vol, sigma=current_vol,

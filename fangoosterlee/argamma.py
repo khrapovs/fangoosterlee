@@ -119,7 +119,7 @@ class ARG(object):
         # Risk-neutral parameters
         factor = 1 / (1 + scale * (theta1 + alpha(theta2)))
         scale_star = scale * factor
-        betap_star = betap * scale_star / scale
+        betap_star = betap * factor
         rho_star = scale_star * betap_star
 
         a_star = lambda u: rho_star * u / (1 + scale_star * u)
