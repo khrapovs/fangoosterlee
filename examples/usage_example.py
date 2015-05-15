@@ -11,7 +11,6 @@ import numpy as np
 import matplotlib.pylab as plt
 import seaborn as sns
 
-from fangoosterlee.impvol import impvol_bisection
 from fangoosterlee import (GBM, GBMParam, VarGamma, VarGammaParam,
                            Heston, HestonParam, ARG, ARGParam, cosmethod)
 
@@ -123,13 +122,7 @@ def multiple_premia_argamma():
     model = ARG(param, riskfree, maturity)
     premium = cosmethod(model, moneyness=moneyness, call=call)
 
-    vol = impvol_bisection(moneyness, maturity, premium, call)
-
-    fig, axes = plt.subplots(nrows=2, ncols=1)
-    axes[0].plot(moneyness, premium, label='premium')
-    axes[1].plot(moneyness, vol, label='impvol')
-    axes[0].legend()
-    axes[1].legend()
+    plt.plot(moneyness, premium)
     plt.show()
 
 
