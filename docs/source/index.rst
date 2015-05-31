@@ -11,15 +11,3 @@
 
 .. automodule:: fangoosterlee.cfinverse
 	:members: cfinverse
-
-.. automodule:: fangoosterlee.gbm
-	:members:
-
-.. automodule:: fangoosterlee.heston
-	:members:
-
-.. automodule:: fangoosterlee.vargamma
-	:members:
-
-.. automodule:: fangoosterlee.argamma
-	:members:

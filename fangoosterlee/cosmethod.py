@@ -22,11 +22,12 @@ References
 from __future__ import division, print_function
 
 import numpy as np
+import numexpr as ne
 
 __all__ = ['cosmethod']
 
 
-def cosmethod(model, moneyness=0., call=True):
+def cosmethod(model, moneyness=0., call=True, npoints=2**10):
     """COS method.
 
     Parameters
@@ -39,6 +40,8 @@ def cosmethod(model, moneyness=0., call=True):
         Moneyness of the option, np.log(strike/price) - riskfree * maturity
     call : bool array_like
         Call/Put flag
+    npoints : int
+        Number of points on the grid. The more the better, but slower.
 
     Returns
     -------
@@ -62,16 +65,16 @@ def cosmethod(model, moneyness=0., call=True):
     if not hasattr(model, 'cos_restriction'):
         raise Exception('COS restriction is not available!')
 
-    npoints = 2**10
-    # (npoints, ) array
+    # (nobs, ) arrays
     alim, blim = model.cos_restriction()
-    # (npoints, 1) array
+    # (npoints, nobs) array
     kvec = np.arange(npoints)[:, np.newaxis] * np.pi / (blim - alim)
     # (npoints, ) array
     unit = np.append(.5, np.ones(npoints-1))
     # Arguments
     argc = (kvec, alim, blim, 0, blim)
     argp = (kvec, alim, blim, alim, 0)
+    # (nobs, ) array
     put = np.logical_not(call)
     # (npoints, nobs) array
     umat = 2 / (blim - alim) * (call * xfun(*argc) - put * xfun(*argp))
@@ -99,11 +102,17 @@ def xfun(k, a, b, c, d):
     (n, m) array
 
     """
-    out0 = (np.cos(k * (d-a)) * np.exp(d) - np.cos(k * (c-a)) * np.exp(c)
-        + k * (np.sin(k * (d-a)) * np.exp(d) - np.sin(k * (c-a)) * np.exp(c)))\
-        / (1 + k**2)
+#    out0 = (np.cos(k * (d-a)) * np.exp(d) - np.cos(k * (c-a)) * np.exp(c)
+#        + k * (np.sin(k * (d-a)) * np.exp(d) - np.sin(k * (c-a)) * np.exp(c)))\
+#        / (1 + k**2)
+#    out1 = (np.sin(k[1:] * (d-a)) - np.sin(k[1:] * (c-a))) / k[1:]
 
-    out1 = (np.sin(k[1:] * (d-a)) - np.sin(k[1:] * (c-a))) / k[1:]
+    out0 = ne.evaluate(("(cos(k * (d-a)) * exp(d) - cos(k * (c-a)) * exp(c)"
+        "+ k * (sin(k * (d-a)) * exp(d) - sin(k * (c-a)) * exp(c)))"
+        "/ (1 + k**2)"))
+    k1 = k[1:]
+    out1 = ne.evaluate("(sin(k1 * (d-a)) - sin(k1 * (c-a))) / k1")
+
     out1 = np.vstack([(d - c) * np.ones_like(a), out1])
 
     return out0 - out1
