@@ -20,6 +20,7 @@ before_install:
 # Install packages
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy matplotlib nose seaborn numexpr
+  - pip install git+git://github.com/khrapovs/impvol
 
 # Run test
 script:
