@@ -70,9 +70,11 @@ def multiple_premia_gbm(nobs=2000):
     strike = np.exp(np.linspace(-.1, .1, nobs))
     riskfree, maturity = 0, 30/365
     moneyness = np.log(strike/price) - riskfree * maturity
+    call = np.ones_like(moneyness).astype(bool)
+    call[moneyness < 0] = False
 
     model = GBM(GBMParam(sigma=sigma), riskfree, maturity)
-    premium = cosmethod(model, moneyness=moneyness, call=True)
+    premium = cosmethod(model, moneyness=moneyness, call=call)
     plt.plot(strike, premium)
     plt.show()
 
@@ -92,10 +94,12 @@ def multiple_premia_heston(nobs=2000):
     maturity = 30/365
     riskfree = .01 * np.ones(nobs)
     moneyness = np.log(strike/price) - riskfree * maturity
+    call = np.ones_like(moneyness).astype(bool)
+    call[moneyness < 0] = False
 
     param = HestonParam(lm=lm, mu=mu, eta=eta, rho=rho, sigma=sigma)
     model = Heston(param, riskfree, maturity)
-    premium = cosmethod(model, moneyness=moneyness, call=True)
+    premium = cosmethod(model, moneyness=moneyness, call=call)
     plt.plot(strike, premium)
     plt.show()
 
@@ -130,8 +134,7 @@ if __name__ == '__main__':
 
     sns.set_context('notebook')
 
-#    single_premium()
-#    multiple_premia_gbm()
-#    multiple_premia_heston(1000)
-
+    single_premium()
+    multiple_premia_gbm()
+    multiple_premia_heston(1000)
     multiple_premia_argamma()
